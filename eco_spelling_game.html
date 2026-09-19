@@ -412,13 +412,41 @@
     function speakCurrentWord() {
         const word = quizData[currentIndex].word;
         if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel(); // stop previous speech
+            window.speechSynthesis.cancel(); // Stop any overlapping audio
+            
             const utterance = new SpeechSynthesisUtterance(word);
+            const voices = window.speechSynthesis.getVoices();
+            
+            // 1. Try to find a high-quality "Natural", "Google", "Enhanced", or standard US/UK English voice
+            let selectedVoice = voices.find(voice => 
+                voice.lang.startsWith('en') && 
+                (voice.name.includes('Natural') || voice.name.includes('Google') || voice.name.includes('Enhanced') || voice.name.includes('Samantha') || voice.name.includes('Karen'))
+            );
+
+            // 2. Fallback to any English voice if a premium one isn't found
+            if (!selectedVoice) {
+                selectedVoice = voices.find(voice => voice.lang.startsWith('en'));
+            }
+
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+            }
+
             utterance.lang = 'en-US';
-            utterance.rate = 0.85; // slightly slower for standard dictation clarity
+            utterance.rate = 0.95; // Natural clear reading speed
+            utterance.pitch = 1.0;  // Standard natural pitch
+
             window.speechSynthesis.speak(utterance);
         }
     }
+
+    // Ensure voices are loaded properly in Chrome / Safari
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = () => {
+            window.speechSynthesis.getVoices();
+        };
+    }
+
 
     function checkAnswer(e) {
         e.preventDefault();
