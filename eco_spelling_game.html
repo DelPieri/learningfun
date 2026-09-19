@@ -1,490 +1,474 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2685.7">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco-Hero Spelling Rescue! 🌿</title>
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #a5d6a7;
+            --accent: #ff9800;
+            --bg: #e8f5e9;
+            --card-bg: #ffffff;
+            --text: #1b5e20;
+            --error: #e53935;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .game-container {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 650px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            padding: 30px;
+            box-sizing: border-box;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 4px solid var(--primary-light);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed #c8e6c9;
+        }
+
+        .badge {
+            background-color: var(--primary-light);
+            color: var(--text);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .score-box {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        h1 {
+            color: var(--primary);
+            margin: 10px 0;
+            font-size: 1.8em;
+        }
+
+        .level-tag {
+            display: inline-block;
+            background-color: #fff3e0;
+            color: #e65100;
+            font-size: 0.85em;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .clue-box {
+            background-color: #f1f8e9;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--primary);
+            text-align: left;
+        }
+
+        .sentence-context {
+            font-size: 1.15em;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .hint-text {
+            font-size: 0.9em;
+            color: #666;
+            font-style: italic;
+        }
+
+        .audio-btn {
+            background-color: #81c784;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.1s;
+        }
+
+        .audio-btn:hover {
+            background-color: var(--primary);
+            transform: scale(1.03);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"] {
+            font-size: 1.3em;
+            padding: 10px 15px;
+            border: 2px solid #a5d6a7;
+            border-radius: 10px;
+            width: 70%;
+            text-align: center;
+            letter-spacing: 1px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-submit {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1em;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-submit:hover {
+            background-color: #1b5e20;
+            transform: translateY(-2px);
+        }
+
+        .feedback {
+            min-height: 40px;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .feedback.correct {
+            color: #2e7d32;
+            background-color: #e8f5e9;
+        }
+
+        .feedback.incorrect {
+            color: var(--error);
+            background-color: #ffebee;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .results-screen {
+            display: none;
+        }
+
+        .results-screen h2 {
+            color: var(--primary);
+            font-size: 2em;
+        }
+
+        .trophy {
+            font-size: 4em;
+            margin: 10px 0;
+        }
+
+        .restart-btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .restart-btn:hover {
+            background-color: #f57c00;
+        }
+    </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="en"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Eco-Hero Spelling Rescue! 🌿&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>:root {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--primary: #2e7d32;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--primary-light: #a5d6a7;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--accent: #ff9800;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--bg: #e8f5e9;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--card-bg: #ffffff;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--text: #1b5e20;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--error: #e53935;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>body {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: var(--bg);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #333;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin: 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>justify-content: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>min-height: 100vh;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.game-container {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: var(--card-bg);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>max-width: 650px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 10px 25px rgba(0,0,0,0.15);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 30px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>box-sizing: border-box;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>position: relative;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>overflow: hidden;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: 4px solid var(--primary-light);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.header {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>justify-content: space-between;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding-bottom: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-bottom: 2px dashed #c8e6c9;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.badge {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: var(--primary-light);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: var(--text);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 6px 14px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 0.9em;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.score-box {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.2em;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: var(--primary);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>h1 {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: var(--primary);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin: 10px 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.8em;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.level-tag {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: inline-block;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #fff3e0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #e65100;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 0.85em;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 4px 10px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 12px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 15px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.clue-box {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #f1f8e9;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 12px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 18px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-left: 5px solid var(--primary);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>text-align: left;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.sentence-context {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.15em;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>line-height: 1.5;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #2c3e50;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.hint-text {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 0.9em;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #666;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-style: italic;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.audio-btn {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #81c784;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: white;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: none;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 8px 16px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>cursor: pointer;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 15px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: inline-flex;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>gap: 6px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>transition: transform 0.1s;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.audio-btn:hover {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: var(--primary);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>transform: scale(1.03);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.input-group {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>gap: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>justify-content: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 15px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>input[type="text"] {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.3em;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 10px 15px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: 2px solid #a5d6a7;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>width: 70%;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>letter-spacing: 1px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>outline: none;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>transition: border-color 0.2s;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>input[type="text"]:focus {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-color: var(--primary);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.btn-submit {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: var(--primary);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: white;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: none;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 12px 24px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1em;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>cursor: pointer;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>transition: background-color 0.2s, transform 0.1s;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.btn-submit:hover {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #1b5e20;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>transform: translateY(-2px);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.feedback {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>min-height: 40px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.1em;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 8px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 8px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.feedback.correct {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #2e7d32;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #e8f5e9;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.feedback.incorrect {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: var(--error);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #ffebee;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.progress-bar-container {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>height: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #e0e0e0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 5px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>overflow: hidden;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.progress-bar {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>height: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>width: 0%;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: var(--primary);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>transition: width 0.3s ease;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.results-screen {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: none;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.results-screen h2 {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: var(--primary);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 2em;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.trophy {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 4em;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin: 10px 0;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.restart-btn {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: var(--accent);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: white;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: none;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 12px 30px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.1em;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 25px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>cursor: pointer;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.restart-btn:hover {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #f57c00;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;div class="game-container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="game-screen"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="header"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;span class="badge" id="category-badge"&gt;Textbook Vocab&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;span class="score-box"&gt;🌱 Eco Points: &lt;span id="score"&gt;0&lt;/span&gt;&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;h1&gt;Eco-Hero Spelling Rescue! 🌍&lt;/h1&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="level-tag" id="question-count"&gt;Question 1 / 15&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="clue-box"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="sentence-context" id="sentence"&gt;Loading sentence...&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="hint-text" id="definition"&gt;Loading hint...&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="audio-btn" onclick="speakCurrentWord()"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>🔊 Listen to Pronunciation</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/button&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;form id="spelling-form" onsubmit="checkAnswer(event)"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="input-group"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="text" id="user-input" placeholder="Type the correct word here..." autocomplete="off" autofocus /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button type="submit" class="btn-submit"&gt;Submit Answer 🚀&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/form&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="feedback" id="feedback"&gt;&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="progress-bar-container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="progress-bar" id="progress-bar"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="results-screen" id="results-screen"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="trophy"&gt;🏆&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;h2&gt;Awesome Job, Eco-Hero!&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;p style="font-size: 1.2em;"&gt;You saved the planet and mastered your dictation words!&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;p style="font-size: 1.5em; font-weight: bold; color: var(--primary);" id="final-score"&gt;&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="restart-btn" onclick="restartGame()"&gt;Play Again 🔄&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p1">&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Vocabulary items: Textbook Pages (1-12) + HK P.6 Bonus (13-16)</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const quizData = [</p>
-<p class="p1"><span class="Apple-converted-space">        </span>{</p>
-<p class="p1"><span class="Apple-converted-space">            </span>word: "ecosystems",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>sentence: "We must protect natural ________ such as oceans, rivers, and forests.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>definition: "Meaning: Biological communities of interacting organisms and their environment.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>isBonus: false</p>
-<p class="p1"><span class="Apple-converted-space">        </span>},</p>
-<p class="p1"><span class="Apple-converted-space">        </span>{</p>
-<p class="p1"><span class="Apple-converted-space">            </span>word: "deterioration",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>sentence: "Pesticides and pollution cause environmental ________ over time.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>definition: "Meaning: The process of becoming progressively worse or damaged.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>isBonus: false</p>
-<p class="p1"><span class="Apple-converted-space">        </span>},</p>
-<p class="p1"><span class="Apple-converted-space">        </span>{</p>
-<p class="p1"><span class="Apple-converted-space">            </span>word: "consumerism",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>sentence: "The rise of mass ________ leads to more trash and wasted natural resources.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>definition: "Meaning: The practice of buying and using a large amount of goods.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>isBonus: false</p>
-<p class="p1"><span class="Apple-converted-space">        </span>},</p>
-<p class="p1"><span class="Apple-converted-space">        </span>{</p>
-<p class="p1"><span class="Apple-converted-space">            </span>word: "endangered",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>sentence: "If we do not save their habitats, these tigers will become ________.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>definition: "Meaning: At risk of extinction.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>isBonus: false</p>
-<p class="p1"><span class="Apple-converted-space">        </span>},</p>
-<p class="p1"><span class="Apple-converted-space">        </span>{</p>
-<p class="p1"><span class="Apple-converted-space">            </span>word: "coexisted",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>sentence: "For millions of years, animals and plants ________ in natural balance.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>definition: "Meaning: Lived together peacefully in the same time or place.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>isBonus: false</p>
-<p class="p1"><span class="Apple-converted-space">        </span>},</p>
-<p class="p1"><span class="Apple-converted-space">        </span>{</p>
-<p class="p1"><span class="Apple-converted-space">            </span>word: "campaign",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>sentence: "Our school started a recycling ________ to reduce plastic waste.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>definition: "Meaning: An organized set of actions to achieve a specific goal.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>isBonus: false</p>
-<p class="p1"><span class="Apple-converted-space">        </span>},</p>
-<p class="p1"><span class="Apple-converted-space">        </span>{</p>
-<p class="p1"><span class="Apple-converted-space">            </span>word: "broccoli",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>sentence: "RSPCA suggests feeding rabbits fresh vegetables like ________ and cabbage.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>definition: "Meaning: A green leafy vegetable with edible flower heads.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>isBonus: false</p>
-<p class="p1"><span class="Apple-converted-space">        </span>},</p>
-<p class="p1"><span class="Apple-converted-space">        </span>{</p>
-<p class="p1"><span class="Apple-converted-space">            </span>word: "spinach",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>sentence: "Packed cups of dark leafy green greens like ________ are healthy for pets.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>definition: "Meaning: A green leafy vegetable rich in vitamins.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>isBonus: false</p>
-<p class="p1"><span class="Apple-converted-space">        </span>},</p>
-<p class="p1"><span class="Apple-converted-space">        </span>{</p>
-<p class="p1"><span class="Apple-converted-space">            </span>word: "rinse",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>sentence: "Turn off the tap while brushing, and turn it on only to ________ your mouth.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>definition: "Meaning: To wash lightly with quick water.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>isBonus: false</p>
-<p class="p1"><span class="Apple-converted-space">        </span>},</p>
-<p class="p1"><span class="Apple-converted-space">        </span>{</p>
-<p class="p1"><span class="Apple-converted-space">            </span>word: "extinct",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>sentence: "Dinosaurs are ________ animals that no longer exist on Earth today.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>definition: "Meaning: Having no living members remaining.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>isBonus: false</p>
-<p class="p1"><span class="Apple-converted-space">        </span>},</p>
-<p class="p1"><span class="Apple-converted-space">        </span>{</p>
-<p class="p1"><span class="Apple-converted-space">            </span>word: "compost",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>sentence: "Fruit peels and vegetable scraps can go into ________ bins.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>definition: "Meaning: Decayed organic material used as plant fertilizer.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>isBonus: false</p>
-<p class="p1"><span class="Apple-converted-space">        </span>},</p>
-<p class="p1"><span class="Apple-converted-space">        </span>{</p>
-<p class="p1"><span class="Apple-converted-space">            </span>word: "threatened",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>sentence: "Illegal hunting leaves many rare forest creatures severely ________.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>definition: "Meaning: Vulnerable or in danger of being harmed.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>isBonus: false</p>
-<p class="p1"><span class="Apple-converted-space">        </span>},</p>
-<p class="p1"><span class="Apple-converted-space">        </span>// HK P.6 Common Daily/Exam Vocab Bonus Round</p>
-<p class="p1"><span class="Apple-converted-space">        </span>{</p>
-<p class="p1"><span class="Apple-converted-space">            </span>word: "conservation",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>sentence: "🌟 [BONUS P.6] Wildlife ________ helps protect wild animals and forest lands.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>definition: "Meaning: The protection and preservation of the environment.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>isBonus: true</p>
-<p class="p1"><span class="Apple-converted-space">        </span>},</p>
-<p class="p1"><span class="Apple-converted-space">        </span>{</p>
-<p class="p1"><span class="Apple-converted-space">            </span>word: "biodiversity",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>sentence: "🌟 [BONUS P.6] Tropical rainforests have a rich ________ with thousands of species.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>definition: "Meaning: The variety of plant and animal life in a habitat.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>isBonus: true</p>
-<p class="p1"><span class="Apple-converted-space">        </span>},</p>
-<p class="p1"><span class="Apple-converted-space">        </span>{</p>
-<p class="p1"><span class="Apple-converted-space">            </span>word: "temperature",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>sentence: "🌟 [BONUS P.6] Global warming causes the Earth's average ________ to rise.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>definition: "Meaning: The degree of hotness or coldness measured by a thermometer.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>isBonus: true</p>
-<p class="p1"><span class="Apple-converted-space">        </span>},</p>
-<p class="p1"><span class="Apple-converted-space">        </span>{</p>
-<p class="p1"><span class="Apple-converted-space">            </span>word: "electricity",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>sentence: "🌟 [BONUS P.6] Turn off lights when leaving the room to save ________.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>definition: "Meaning: Energy used to power lights, appliances, and devices.",</p>
-<p class="p1"><span class="Apple-converted-space">            </span>isBonus: true</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>];</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>let currentIndex = 0;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let score = 0;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function loadQuestion() {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const item = quizData[currentIndex];</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("user-input").value = "";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("feedback").textContent = "";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("feedback").className = "feedback";</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("sentence").textContent = item.sentence;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("definition").textContent = item.definition;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("question-count").textContent = `Question ${currentIndex + 1} / ${quizData.length}`;</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>const badge = document.getElementById("category-badge");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (item.isBonus) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>badge.textContent = "⭐ HK P.6 Bonus Challenge";</p>
-<p class="p1"><span class="Apple-converted-space">            </span>badge.style.backgroundColor = "#ffe082";</p>
-<p class="p1"><span class="Apple-converted-space">            </span>badge.style.color = "#e65100";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>badge.textContent = "📖 Dictation Textbook Vocab";</p>
-<p class="p1"><span class="Apple-converted-space">            </span>badge.style.backgroundColor = "#a5d6a7";</p>
-<p class="p1"><span class="Apple-converted-space">            </span>badge.style.color = "#1b5e20";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>const progressPercent = ((currentIndex) / quizData.length) * 100;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("progress-bar").style.width = progressPercent + "%";</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// Speak word automatically after a small delay</p>
-<p class="p1"><span class="Apple-converted-space">        </span>setTimeout(() =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>speakCurrentWord();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}, 400);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function speakCurrentWord() {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const word = quizData[currentIndex].word;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>if ('speechSynthesis' in window) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>window.speechSynthesis.cancel(); // stop previous speech</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const utterance = new SpeechSynthesisUtterance(word);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>utterance.lang = 'en-US';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>utterance.rate = 0.85; // slightly slower for standard dictation clarity</p>
-<p class="p1"><span class="Apple-converted-space">            </span>window.speechSynthesis.speak(utterance);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function checkAnswer(e) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>e.preventDefault();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const userInput = document.getElementById("user-input").value.trim().toLowerCase();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const targetWord = quizData[currentIndex].word.toLowerCase();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const feedbackEl = document.getElementById("feedback");</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (!userInput) return;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (userInput === targetWord) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>score += quizData[currentIndex].isBonus ? 15 : 10;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById("score").textContent = score;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>feedbackEl.textContent = "🎉 Excellent! Correct Spelling!";</p>
-<p class="p1"><span class="Apple-converted-space">            </span>feedbackEl.className = "feedback correct";</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>setTimeout(() =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>currentIndex++;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>if (currentIndex &lt; quizData.length) {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>loadQuestion();</p>
-<p class="p1"><span class="Apple-converted-space">                </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>showResults();</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}, 1200);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Provide helpful spelling hint</p>
-<p class="p1"><span class="Apple-converted-space">            </span>feedbackEl.textContent = `❌ Oops! Correct spelling: "${targetWord}". Try typing it again!`;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>feedbackEl.className = "feedback incorrect";</p>
-<p class="p1"><span class="Apple-converted-space">            </span>speakCurrentWord();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function showResults() {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("progress-bar").style.width = "100%";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("game-screen").style.display = "none";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("results-screen").style.display = "block";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("final-score").textContent = `Final Eco Score: ${score} Points!`;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function restartGame() {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>currentIndex = 0;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>score = 0;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("score").textContent = score;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("game-screen").style.display = "block";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("results-screen").style.display = "none";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>loadQuestion();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Initialize on page load</p>
-<p class="p1"><span class="Apple-converted-space">    </span>window.onload = loadQuestion;</p>
-<p class="p1">&lt;/script&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+
+<div class="game-container">
+    <div id="game-screen">
+        <div class="header">
+            <span class="badge" id="category-badge">Textbook Vocab</span>
+            <span class="score-box">🌱 Eco Points: <span id="score">0</span></span>
+        </div>
+
+        <h1>Eco-Hero Spelling Rescue! 🌍</h1>
+        <div class="level-tag" id="question-count">Question 1 / 15</div>
+
+        <div class="clue-box">
+            <div class="sentence-context" id="sentence">Loading sentence...</div>
+            <div class="hint-text" id="definition">Loading hint...</div>
+        </div>
+
+        <button class="audio-btn" onclick="speakCurrentWord()">
+            🔊 Listen to Pronunciation
+        </button>
+
+        <form id="spelling-form" onsubmit="checkAnswer(event)">
+            <div class="input-group">
+                <input type="text" id="user-input" placeholder="Type the correct word here..." autocomplete="off" autofocus />
+            </div>
+            <button type="submit" class="btn-submit">Submit Answer 🚀</button>
+        </form>
+
+        <div class="feedback" id="feedback"></div>
+
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+    </div>
+
+    <div class="results-screen" id="results-screen">
+        <div class="trophy">🏆</div>
+        <h2>Awesome Job, Eco-Hero!</h2>
+        <p style="font-size: 1.2em;">You saved the planet and mastered your dictation words!</p>
+        <p style="font-size: 1.5em; font-weight: bold; color: var(--primary);" id="final-score"></p>
+        <button class="restart-btn" onclick="restartGame()">Play Again 🔄</button>
+    </div>
+</div>
+
+<script>
+    // Vocabulary items: Textbook Pages (1-12) + HK P.6 Bonus (13-16)
+    const quizData = [
+        {
+            word: "ecosystems",
+            sentence: "We must protect natural ________ such as oceans, rivers, and forests.",
+            definition: "Meaning: Biological communities of interacting organisms and their environment.",
+            isBonus: false
+        },
+        {
+            word: "deterioration",
+            sentence: "Pesticides and pollution cause environmental ________ over time.",
+            definition: "Meaning: The process of becoming progressively worse or damaged.",
+            isBonus: false
+        },
+        {
+            word: "consumerism",
+            sentence: "The rise of mass ________ leads to more trash and wasted natural resources.",
+            definition: "Meaning: The practice of buying and using a large amount of goods.",
+            isBonus: false
+        },
+        {
+            word: "endangered",
+            sentence: "If we do not save their habitats, these tigers will become ________.",
+            definition: "Meaning: At risk of extinction.",
+            isBonus: false
+        },
+        {
+            word: "coexisted",
+            sentence: "For millions of years, animals and plants ________ in natural balance.",
+            definition: "Meaning: Lived together peacefully in the same time or place.",
+            isBonus: false
+        },
+        {
+            word: "campaign",
+            sentence: "Our school started a recycling ________ to reduce plastic waste.",
+            definition: "Meaning: An organized set of actions to achieve a specific goal.",
+            isBonus: false
+        },
+        {
+            word: "broccoli",
+            sentence: "RSPCA suggests feeding rabbits fresh vegetables like ________ and cabbage.",
+            definition: "Meaning: A green leafy vegetable with edible flower heads.",
+            isBonus: false
+        },
+        {
+            word: "spinach",
+            sentence: "Packed cups of dark leafy green greens like ________ are healthy for pets.",
+            definition: "Meaning: A green leafy vegetable rich in vitamins.",
+            isBonus: false
+        },
+        {
+            word: "rinse",
+            sentence: "Turn off the tap while brushing, and turn it on only to ________ your mouth.",
+            definition: "Meaning: To wash lightly with quick water.",
+            isBonus: false
+        },
+        {
+            word: "extinct",
+            sentence: "Dinosaurs are ________ animals that no longer exist on Earth today.",
+            definition: "Meaning: Having no living members remaining.",
+            isBonus: false
+        },
+        {
+            word: "compost",
+            sentence: "Fruit peels and vegetable scraps can go into ________ bins.",
+            definition: "Meaning: Decayed organic material used as plant fertilizer.",
+            isBonus: false
+        },
+        {
+            word: "threatened",
+            sentence: "Illegal hunting leaves many rare forest creatures severely ________.",
+            definition: "Meaning: Vulnerable or in danger of being harmed.",
+            isBonus: false
+        },
+        // HK P.6 Common Daily/Exam Vocab Bonus Round
+        {
+            word: "conservation",
+            sentence: "🌟 [BONUS P.6] Wildlife ________ helps protect wild animals and forest lands.",
+            definition: "Meaning: The protection and preservation of the environment.",
+            isBonus: true
+        },
+        {
+            word: "biodiversity",
+            sentence: "🌟 [BONUS P.6] Tropical rainforests have a rich ________ with thousands of species.",
+            definition: "Meaning: The variety of plant and animal life in a habitat.",
+            isBonus: true
+        },
+        {
+            word: "temperature",
+            sentence: "🌟 [BONUS P.6] Global warming causes the Earth's average ________ to rise.",
+            definition: "Meaning: The degree of hotness or coldness measured by a thermometer.",
+            isBonus: true
+        },
+        {
+            word: "electricity",
+            sentence: "🌟 [BONUS P.6] Turn off lights when leaving the room to save ________.",
+            definition: "Meaning: Energy used to power lights, appliances, and devices.",
+            isBonus: true
+        }
+    ];
+
+    let currentIndex = 0;
+    let score = 0;
+
+    function loadQuestion() {
+        const item = quizData[currentIndex];
+        document.getElementById("user-input").value = "";
+        document.getElementById("feedback").textContent = "";
+        document.getElementById("feedback").className = "feedback";
+        
+        document.getElementById("sentence").textContent = item.sentence;
+        document.getElementById("definition").textContent = item.definition;
+        document.getElementById("question-count").textContent = `Question ${currentIndex + 1} / ${quizData.length}`;
+        
+        const badge = document.getElementById("category-badge");
+        if (item.isBonus) {
+            badge.textContent = "⭐ HK P.6 Bonus Challenge";
+            badge.style.backgroundColor = "#ffe082";
+            badge.style.color = "#e65100";
+        } else {
+            badge.textContent = "📖 Dictation Textbook Vocab";
+            badge.style.backgroundColor = "#a5d6a7";
+            badge.style.color = "#1b5e20";
+        }
+
+        const progressPercent = ((currentIndex) / quizData.length) * 100;
+        document.getElementById("progress-bar").style.width = progressPercent + "%";
+
+        // Speak word automatically after a small delay
+        setTimeout(() => {
+            speakCurrentWord();
+        }, 400);
+    }
+
+    function speakCurrentWord() {
+        const word = quizData[currentIndex].word;
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel(); // stop previous speech
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.85; // slightly slower for standard dictation clarity
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    function checkAnswer(e) {
+        e.preventDefault();
+        const userInput = document.getElementById("user-input").value.trim().toLowerCase();
+        const targetWord = quizData[currentIndex].word.toLowerCase();
+        const feedbackEl = document.getElementById("feedback");
+
+        if (!userInput) return;
+
+        if (userInput === targetWord) {
+            score += quizData[currentIndex].isBonus ? 15 : 10;
+            document.getElementById("score").textContent = score;
+            feedbackEl.textContent = "🎉 Excellent! Correct Spelling!";
+            feedbackEl.className = "feedback correct";
+
+            setTimeout(() => {
+                currentIndex++;
+                if (currentIndex < quizData.length) {
+                    loadQuestion();
+                } else {
+                    showResults();
+                }
+            }, 1200);
+        } else {
+            // Provide helpful spelling hint
+            feedbackEl.textContent = `❌ Oops! Correct spelling: "${targetWord}". Try typing it again!`;
+            feedbackEl.className = "feedback incorrect";
+            speakCurrentWord();
+        }
+    }
+
+    function showResults() {
+        document.getElementById("progress-bar").style.width = "100%";
+        document.getElementById("game-screen").style.display = "none";
+        document.getElementById("results-screen").style.display = "block";
+        document.getElementById("final-score").textContent = `Final Eco Score: ${score} Points!`;
+    }
+
+    function restartGame() {
+        currentIndex = 0;
+        score = 0;
+        document.getElementById("score").textContent = score;
+        document.getElementById("game-screen").style.display = "block";
+        document.getElementById("results-screen").style.display = "none";
+        loadQuestion();
+    }
+
+    // Initialize on page load
+    window.onload = loadQuestion;
+</script>
+
 </body>
 </html>
