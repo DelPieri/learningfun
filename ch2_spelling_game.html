@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapter 2 Dictation Master 🌍</title>
+    <title>Chapter 2 Dictation Master (30 Words) 🌍</title>
     <style>
         :root {
             --primary: #27ae60;
@@ -43,7 +43,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 2px dashed #d5f5e3;
         }
@@ -66,7 +66,7 @@
         h1 {
             color: var(--primary-dark);
             margin: 5px 0 15px 0;
-            font-size: 1.8em;
+            font-size: 1.7em;
         }
 
         .attempts-tracker {
@@ -220,7 +220,7 @@
 <div class="game-card">
     <div id="game-screen">
         <div class="header">
-            <span class="badge">Chapter 2 Revision</span>
+            <span class="badge" id="word-count-badge">Word 1 of 30</span>
             <span class="score-box">⭐ Score: <span id="score">0</span></span>
         </div>
 
@@ -252,7 +252,7 @@
 
     <div class="results-screen" id="results-screen">
         <h2>🎉 Dictation Practice Complete!</h2>
-        <p style="font-size: 1.2em;">Great job practicing Chapter 2 vocabulary!</p>
+        <p style="font-size: 1.2em;">Great job practicing all 30 Chapter 2 words!</p>
         <p style="font-size: 1.5em; font-weight: bold; color: var(--primary-dark);" id="final-score"></p>
         <button class="restart-btn" onclick="restartGame()">Practice Again 🔄</button>
     </div>
@@ -260,76 +260,39 @@
 
 <script>
     const quizData = [
-        {
-            word: "launched",
-            sentence: "Earth Day was officially ________ in 1970 in the USA.",
-            definition: "Meaning: Started or set in motion for the first time."
-        },
-        {
-            word: "enact",
-            sentence: "The government passed new clean air and water laws to ________ strict regulations.",
-            definition: "Meaning: To make a bill into official law."
-        },
-        {
-            word: "endangered",
-            sentence: "We must pass laws to protect ________ species from going extinct.",
-            definition: "Meaning: At risk of completely disappearing from Earth."
-        },
-        {
-            word: "establish",
-            sentence: "The country decided to ________ the Environmental Protection Agency.",
-            definition: "Meaning: To set up, found, or create an official organization."
-        },
-        {
-            word: "investigate",
-            sentence: "The agency's role is to ________ environmental issues thoroughly.",
-            definition: "Meaning: To carry out research or inquire into facts."
-        },
-        {
-            word: "enforce",
-            sentence: "Police officers help ________ environmental laws to keep beaches clean.",
-            definition: "Meaning: To compel people to obey rules or standards."
-        },
-        {
-            word: "contribution",
-            sentence: "An eco-action is any activity that makes a positive ________ to nature.",
-            definition: "Meaning: Something done or given to help a cause."
-        },
-        {
-            word: "internationally",
-            sentence: "In 1990, Earth Day was celebrated ________ across 140 countries.",
-            definition: "Meaning: Involving or taking place in multiple nations worldwide."
-        },
-        {
-            word: "participate",
-            sentence: "Millions of students ________ in clean-up walks and green campaigns.",
-            definition: "Meaning: To take part or join in an activity."
-        },
-        {
-            word: "campaigns",
-            sentence: "The school organized several recycling ________ during Earth Month.",
-            definition: "Meaning: Planned series of actions to achieve a goal."
-        },
-        {
-            word: "dedicated",
-            sentence: "These organisations are ________ to helping young people protect nature.",
-            definition: "Meaning: Devoted completely to a specific task or purpose."
-        },
-        {
-            word: "preserve",
-            sentence: "We need to donate time and resources to ________ Earth for future generations.",
-            definition: "Meaning: To maintain, protect, and keep safe."
-        },
-        {
-            word: "founder",
-            sentence: "Shimon Schwarzschild is the ________ of Action for Nature.",
-            definition: "Meaning: A person who establishes an organization."
-        },
-        {
-            word: "protest",
-            sentence: "He started a campaign to ________ the hunting of songbirds in Italy.",
-            definition: "Meaning: To express strong public objection or disagreement."
-        }
+        // Original 15 Words
+        { word: "launched", sentence: "Earth Day was officially ________ in 1970 in the USA.", definition: "Meaning: Formally introduced or started." },
+        { word: "enact", sentence: "The government passed laws to ________ clean air and water standards.", definition: "Meaning: To make a bill into official law." },
+        { word: "endangered", sentence: "We must pass laws to protect ________ species from extinction.", definition: "Meaning: At risk of becoming extinct." },
+        { word: "establish", sentence: "They decided to ________ the Environmental Protection Agency.", definition: "Meaning: To set up or create an organization." },
+        { word: "investigate", sentence: "The role of the agency is to ________ environmental issues.", definition: "Meaning: To research or examine issues systematically." },
+        { word: "enforce", sentence: "Officers work hard to ________ environmental laws.", definition: "Meaning: To compel obedience to laws." },
+        { word: "contribution", sentence: "An eco-action makes a positive ________ to our environment.", definition: "Meaning: An action that helps achieve a goal." },
+        { word: "internationally", sentence: "Earth Day was launched ________ across many nations in 1990.", definition: "Meaning: Across or involving multiple countries." },
+        { word: "participate", sentence: "About 200 million people ________ in Earth Day activities.", definition: "Meaning: To take part or be involved in an activity." },
+        { word: "campaigns", sentence: "They organized clean-up ________ and environmental walks.", definition: "Meaning: Series of organized activities toward a goal." },
+        { word: "dedicated", sentence: "These eco-heroes are ________ to preserving our planet.", definition: "Meaning: Devoted entirely to a specific purpose." },
+        { word: "preserve", sentence: "We need to ________ Earth for future generations.", definition: "Meaning: To protect and keep safe from harm." },
+        { word: "founder", sentence: "Shimon Schwarzschild is the ________ of Action for Nature.", definition: "Meaning: A person who creates or sets up an organization." },
+        { word: "protest", sentence: "He started a campaign to ________ the hunting of songbirds.", definition: "Meaning: To publicly express disapproval or objection." },
+        { word: "organisations", sentence: "An increasing number of eco-________ have been established.", definition: "Meaning: Groups of people organized for a specific purpose." },
+        
+        // Additional 15 Words from Image
+        { word: "atmosphere", sentence: "Pollution in the air affects Earth's ________ and climate.", definition: "Meaning (n.): The layer of gases surrounding the Earth." },
+        { word: "waterways", sentence: "Trash in rivers and streams pollutes local ________.", definition: "Meaning (n.): Rivers, canals, or other bodies of water." },
+        { word: "inspired", sentence: "Earth Day ________ millions of people around the world.", definition: "Meaning (v.): Filled someone with the desire to act." },
+        { word: "environmental", sentence: "The EPA investigates ________ issues to keep nature safe.", definition: "Meaning (adj.): Relating to the natural world." },
+        { word: "celebrated", sentence: "Every year, Earth Day is ________ on April 22nd.", definition: "Meaning (v.): Honored or observed with special events." },
+        { word: "communities", sentence: "People in local ________ participate in green projects.", definition: "Meaning (n.): Groups of people living in the same area." },
+        { word: "planet", sentence: "It is essential to take care of ________ Earth.", definition: "Meaning (n.): A large celestial body orbiting a star." },
+        { word: "completion", sentence: "The ceremony marked the ________ of the new temple.", definition: "Meaning (n.): The state of finishing something." },
+        { word: "inspire", sentence: "Eco-heroes want to ________ young people to protect nature.", definition: "Meaning (v.): To motivate or give enthusiasm to others." },
+        { word: "throughout", sentence: "They organise environmental activities ________ the year.", definition: "Meaning (adv.): In every part or during the whole period of." },
+        { word: "countries", sentence: "Over 170 ________ take part in Earth Day events.", definition: "Meaning (n.): Nations with their own territories and governments." },
+        { word: "officially", sentence: "Earth Day was ________ launched worldwide in 1990.", definition: "Meaning (adv.): Formally or authorized by authority." },
+        { word: "resources", sentence: "People donate their time and ________ to preserve nature.", definition: "Meaning (v./n.): Assets or supplies that can be drawn on." },
+        { word: "encourages", sentence: "Action for Nature ________ kids to take action for Earth.", definition: "Meaning (v.): Gives support, confidence, or hope to someone." },
+        { word: "discovered", sentence: "He ________ that songbirds were being hunted illegally.", definition: "Meaning (v.): Found out or learned something new." }
     ];
 
     let currentIndex = 0;
@@ -345,6 +308,7 @@
         document.getElementById("feedback").textContent = "";
         document.getElementById("feedback").className = "feedback";
         
+        document.getElementById("word-count-badge").textContent = `Word ${currentIndex + 1} of ${quizData.length}`;
         document.getElementById("sentence").textContent = item.sentence;
         document.getElementById("definition").textContent = item.definition;
         document.getElementById("attempts-display").textContent = `Attempts Left: ${attemptsLeft}/3`;
@@ -369,7 +333,7 @@
 
             if (selectedVoice) utterance.voice = selectedVoice;
             utterance.lang = 'en-US';
-            utterance.rate = 0.95;
+            utterance.rate = 0.9;
             window.speechSynthesis.speak(utterance);
         }
     }
@@ -383,7 +347,6 @@
         if (!userInput) return;
 
         if (userInput === targetWord) {
-            // Correct answer logic
             let addedPoints = attemptsLeft === 3 ? 10 : attemptsLeft === 2 ? 7 : 4;
             score += addedPoints;
             document.getElementById("score").textContent = score;
@@ -402,7 +365,6 @@
             }, 1200);
 
         } else {
-            // Incorrect answer logic
             attemptsLeft--;
             document.getElementById("attempts-display").textContent = `Attempts Left: ${attemptsLeft}/3`;
 
@@ -411,7 +373,6 @@
                 feedbackEl.className = "feedback warning";
                 speakCurrentWord();
             } else {
-                // 3rd Failed Attempt: Reveal correct spelling
                 feedbackEl.innerHTML = `💡 Out of tries! The correct spelling is: <u><strong>${targetWord.toUpperCase()}</strong></u>`;
                 feedbackEl.className = "feedback reveal";
                 document.getElementById("user-input").disabled = true;
@@ -424,7 +385,7 @@
                     } else {
                         showResults();
                     }
-                }, 3500); // Gives 3.5s to read and remember the correct spelling
+                }, 3500);
             }
         }
     }
