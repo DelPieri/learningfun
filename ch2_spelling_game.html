@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 2 Dictation Master 🌍</title>
+    <style>
+        :root {
+            --primary: #27ae60;
+            --primary-dark: #1e8449;
+            --accent: #f39c12;
+            --bg: #eafaf1;
+            --card-bg: #ffffff;
+            --text: #2c3e50;
+            --error: #e74c3c;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 650px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            padding: 30px;
+            box-sizing: border-box;
+            text-align: center;
+            border: 3px solid #abebc6;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed #d5f5e3;
+        }
+
+        .badge {
+            background-color: #d5f5e3;
+            color: var(--primary-dark);
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .score-box {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--primary-dark);
+        }
+
+        h1 {
+            color: var(--primary-dark);
+            margin: 5px 0 15px 0;
+            font-size: 1.8em;
+        }
+
+        .attempts-tracker {
+            display: inline-block;
+            background-color: #fef9e7;
+            color: #d35400;
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .clue-box {
+            background-color: #f4fbf7;
+            border-left: 5px solid var(--primary);
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .sentence {
+            font-size: 1.15em;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .definition {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .audio-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.1s;
+        }
+
+        .audio-btn:hover {
+            background-color: var(--primary-dark);
+            transform: scale(1.03);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"] {
+            font-size: 1.2em;
+            padding: 10px 15px;
+            border: 2px solid #a9dfbf;
+            border-radius: 10px;
+            width: 65%;
+            text-align: center;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-submit {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .feedback {
+            min-height: 50px;
+            font-size: 1.05em;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .feedback.correct {
+            color: #1e8449;
+            background-color: #d5f5e3;
+        }
+
+        .feedback.warning {
+            color: #d35400;
+            background-color: #fdebd0;
+        }
+
+        .feedback.reveal {
+            color: #c0392b;
+            background-color: #fadbd8;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background-color: #eaeded;
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .results-screen {
+            display: none;
+        }
+
+        .restart-btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1em;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-card">
+    <div id="game-screen">
+        <div class="header">
+            <span class="badge">Chapter 2 Revision</span>
+            <span class="score-box">⭐ Score: <span id="score">0</span></span>
+        </div>
+
+        <h1>Earth Day Eco-Spelling 🌿</h1>
+        <div class="attempts-tracker" id="attempts-display">Attempts Left: 3/3</div>
+
+        <div class="clue-box">
+            <div class="sentence" id="sentence">Loading...</div>
+            <div class="definition" id="definition">Loading...</div>
+        </div>
+
+        <button class="audio-btn" onclick="speakCurrentWord()">
+            🔊 Listen Word
+        </button>
+
+        <form id="spelling-form" onsubmit="checkAnswer(event)">
+            <div class="input-group">
+                <input type="text" id="user-input" placeholder="Type answer here..." autocomplete="off" autofocus />
+                <button type="submit" class="btn-submit" id="submit-btn">Check 🚀</button>
+            </div>
+        </form>
+
+        <div class="feedback" id="feedback"></div>
+
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+    </div>
+
+    <div class="results-screen" id="results-screen">
+        <h2>🎉 Dictation Practice Complete!</h2>
+        <p style="font-size: 1.2em;">Great job practicing Chapter 2 vocabulary!</p>
+        <p style="font-size: 1.5em; font-weight: bold; color: var(--primary-dark);" id="final-score"></p>
+        <button class="restart-btn" onclick="restartGame()">Practice Again 🔄</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        {
+            word: "launched",
+            sentence: "Earth Day was officially ________ in 1970 in the USA.",
+            definition: "Meaning: Started or set in motion for the first time."
+        },
+        {
+            word: "enact",
+            sentence: "The government passed new clean air and water laws to ________ strict regulations.",
+            definition: "Meaning: To make a bill into official law."
+        },
+        {
+            word: "endangered",
+            sentence: "We must pass laws to protect ________ species from going extinct.",
+            definition: "Meaning: At risk of completely disappearing from Earth."
+        },
+        {
+            word: "establish",
+            sentence: "The country decided to ________ the Environmental Protection Agency.",
+            definition: "Meaning: To set up, found, or create an official organization."
+        },
+        {
+            word: "investigate",
+            sentence: "The agency's role is to ________ environmental issues thoroughly.",
+            definition: "Meaning: To carry out research or inquire into facts."
+        },
+        {
+            word: "enforce",
+            sentence: "Police officers help ________ environmental laws to keep beaches clean.",
+            definition: "Meaning: To compel people to obey rules or standards."
+        },
+        {
+            word: "contribution",
+            sentence: "An eco-action is any activity that makes a positive ________ to nature.",
+            definition: "Meaning: Something done or given to help a cause."
+        },
+        {
+            word: "internationally",
+            sentence: "In 1990, Earth Day was celebrated ________ across 140 countries.",
+            definition: "Meaning: Involving or taking place in multiple nations worldwide."
+        },
+        {
+            word: "participate",
+            sentence: "Millions of students ________ in clean-up walks and green campaigns.",
+            definition: "Meaning: To take part or join in an activity."
+        },
+        {
+            word: "campaigns",
+            sentence: "The school organized several recycling ________ during Earth Month.",
+            definition: "Meaning: Planned series of actions to achieve a goal."
+        },
+        {
+            word: "dedicated",
+            sentence: "These organisations are ________ to helping young people protect nature.",
+            definition: "Meaning: Devoted completely to a specific task or purpose."
+        },
+        {
+            word: "preserve",
+            sentence: "We need to donate time and resources to ________ Earth for future generations.",
+            definition: "Meaning: To maintain, protect, and keep safe."
+        },
+        {
+            word: "founder",
+            sentence: "Shimon Schwarzschild is the ________ of Action for Nature.",
+            definition: "Meaning: A person who establishes an organization."
+        },
+        {
+            word: "protest",
+            sentence: "He started a campaign to ________ the hunting of songbirds in Italy.",
+            definition: "Meaning: To express strong public objection or disagreement."
+        }
+    ];
+
+    let currentIndex = 0;
+    let score = 0;
+    let attemptsLeft = 3;
+
+    function loadQuestion() {
+        attemptsLeft = 3;
+        const item = quizData[currentIndex];
+        document.getElementById("user-input").value = "";
+        document.getElementById("user-input").disabled = false;
+        document.getElementById("submit-btn").disabled = false;
+        document.getElementById("feedback").textContent = "";
+        document.getElementById("feedback").className = "feedback";
+        
+        document.getElementById("sentence").textContent = item.sentence;
+        document.getElementById("definition").textContent = item.definition;
+        document.getElementById("attempts-display").textContent = `Attempts Left: ${attemptsLeft}/3`;
+
+        const progressPercent = (currentIndex / quizData.length) * 100;
+        document.getElementById("progress-bar").style.width = progressPercent + "%";
+
+        setTimeout(() => speakCurrentWord(), 300);
+    }
+
+    function speakCurrentWord() {
+        const word = quizData[currentIndex].word;
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(word);
+            const voices = window.speechSynthesis.getVoices();
+            
+            let selectedVoice = voices.find(v => 
+                v.lang.startsWith('en') && 
+                (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Enhanced') || v.name.includes('Samantha'))
+            ) || voices.find(v => v.lang.startsWith('en'));
+
+            if (selectedVoice) utterance.voice = selectedVoice;
+            utterance.lang = 'en-US';
+            utterance.rate = 0.95;
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    function checkAnswer(e) {
+        e.preventDefault();
+        const userInput = document.getElementById("user-input").value.trim().toLowerCase();
+        const targetWord = quizData[currentIndex].word.toLowerCase();
+        const feedbackEl = document.getElementById("feedback");
+
+        if (!userInput) return;
+
+        if (userInput === targetWord) {
+            // Correct answer logic
+            let addedPoints = attemptsLeft === 3 ? 10 : attemptsLeft === 2 ? 7 : 4;
+            score += addedPoints;
+            document.getElementById("score").textContent = score;
+
+            feedbackEl.textContent = `🎉 Correct! (+${addedPoints} pts)`;
+            feedbackEl.className = "feedback correct";
+            document.getElementById("user-input").disabled = true;
+
+            setTimeout(() => {
+                currentIndex++;
+                if (currentIndex < quizData.length) {
+                    loadQuestion();
+                } else {
+                    showResults();
+                }
+            }, 1200);
+
+        } else {
+            // Incorrect answer logic
+            attemptsLeft--;
+            document.getElementById("attempts-display").textContent = `Attempts Left: ${attemptsLeft}/3`;
+
+            if (attemptsLeft > 0) {
+                feedbackEl.textContent = `❌ Incorrect spelling! You have ${attemptsLeft} attempt(s) remaining. Try again!`;
+                feedbackEl.className = "feedback warning";
+                speakCurrentWord();
+            } else {
+                // 3rd Failed Attempt: Reveal correct spelling
+                feedbackEl.innerHTML = `💡 Out of tries! The correct spelling is: <u><strong>${targetWord.toUpperCase()}</strong></u>`;
+                feedbackEl.className = "feedback reveal";
+                document.getElementById("user-input").disabled = true;
+                document.getElementById("submit-btn").disabled = true;
+
+                setTimeout(() => {
+                    currentIndex++;
+                    if (currentIndex < quizData.length) {
+                        loadQuestion();
+                    } else {
+                        showResults();
+                    }
+                }, 3500); // Gives 3.5s to read and remember the correct spelling
+            }
+        }
+    }
+
+    function showResults() {
+        document.getElementById("progress-bar").style.width = "100%";
+        document.getElementById("game-screen").style.display = "none";
+        document.getElementById("results-screen").style.display = "block";
+        document.getElementById("final-score").textContent = `Total Score: ${score} / ${quizData.length * 10} Points`;
+    }
+
+    function restartGame() {
+        currentIndex = 0;
+        score = 0;
+        document.getElementById("score").textContent = score;
+        document.getElementById("game-screen").style.display = "block";
+        document.getElementById("results-screen").style.display = "none";
+        loadQuestion();
+    }
+
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    }
+
+    window.onload = loadQuestion;
+</script>
+
+</body>
+</html>
