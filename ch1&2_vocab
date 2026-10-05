@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Vocabulary Exam Prep (Ch 1 & 2) 🎓</title>
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #e8f5e9;
+            --accent: #f39c12;
+            --bg: #f1f8e9;
+            --card-bg: #ffffff;
+            --text: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 680px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            padding: 30px;
+            box-sizing: border-box;
+            text-align: center;
+            border: 3px solid #c8e6c9;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed #c8e6c9;
+        }
+
+        .badge {
+            background-color: #c8e6c9;
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+
+        .score-box {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        h1 {
+            color: var(--primary);
+            margin: 5px 0 15px 0;
+            font-size: 1.8em;
+        }
+
+        .section-title {
+            font-size: 1.05em;
+            font-weight: bold;
+            color: #555;
+            margin: 15px 0 8px 0;
+            text-align: left;
+        }
+
+        .chapter-select {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-ch {
+            padding: 12px 10px;
+            font-size: 0.95em;
+            font-weight: bold;
+            border: 2px solid #a5d6a7;
+            background-color: #ffffff;
+            color: var(--primary);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-ch.selected {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .level-select {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-level {
+            padding: 14px 20px;
+            font-size: 1.05em;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-level span {
+            font-size: 0.85em;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+
+        .btn-basic { background-color: #a5d6a7; color: #1b5e20; }
+        .btn-basic:hover { background-color: #81c784; transform: translateY(-2px); }
+
+        .btn-medium { background-color: #ffe082; color: #f57f17; }
+        .btn-medium:hover { background-color: #ffd54f; transform: translateY(-2px); }
+
+        .btn-advanced { background-color: #ffab91; color: #bf360c; }
+        .btn-advanced:hover { background-color: #ff8a65; transform: translateY(-2px); }
+
+        .attempts-tracker {
+            display: inline-block;
+            background-color: #fff3e0;
+            color: #e65100;
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .clue-box {
+            background-color: var(--primary-light);
+            border-left: 5px solid var(--primary);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .sentence {
+            font-size: 1.2em;
+            line-height: 1.5;
+            margin-bottom: 8px;
+            color: #1b5e20;
+        }
+
+        .hint {
+            font-size: 0.95em;
+            color: #558b2f;
+            font-weight: 600;
+        }
+
+        .audio-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .btn-option {
+            background-color: #ffffff;
+            border: 2px solid #a5d6a7;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--primary);
+            cursor: pointer;
+        }
+
+        .btn-option:hover { background-color: var(--primary-light); }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"] {
+            font-size: 1.2em;
+            padding: 10px 15px;
+            border: 2px solid #a5d6a7;
+            border-radius: 10px;
+            width: 65%;
+            text-align: center;
+            outline: none;
+        }
+
+        .btn-submit {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .feedback {
+            min-height: 50px;
+            font-size: 1.05em;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .feedback.correct { color: #2e7d32; background-color: #c8e6c9; }
+        .feedback.warning { color: #e65100; background-color: #ffe082; }
+        .feedback.reveal  { color: #c62828; background-color: #ffcdd2; }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .hidden { display: none; }
+
+        .restart-btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1em;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-card">
+    <!-- SETUP SCREEN -->
+    <div id="setup-screen">
+        <h1>Vocabulary Exam Prep 🎓</h1>
+
+        <div class="section-title">1. Select Chapter:</div>
+        <div class="chapter-select">
+            <button class="btn-ch" id="btn-ch1" onclick="selectChapter('ch1')">📘 Chapter 1</button>
+            <button class="btn-ch selected" id="btn-ch2" onclick="selectChapter('ch2')">🌿 Chapter 2</button>
+            <button class="btn-ch" id="btn-both" onclick="selectChapter('both')">🌟 Ch 1 & 2 Mix</button>
+        </div>
+
+        <div class="section-title">2. Select Difficulty Level:</div>
+        <div class="level-select">
+            <button class="btn-level btn-basic" onclick="startGame('basic')">
+                🟢 Basic Level
+                <span>Gentle Voice Reading + Meaning + 3 Choices</span>
+            </button>
+            <button class="btn-level btn-medium" onclick="startGame('medium')">
+                🟡 Medium Level
+                <span>Chinese Meaning + Type Spelling</span>
+            </button>
+            <button class="btn-level btn-advanced" onclick="startGame('advanced')">
+                🔴 Advanced Level (Exam Mode)
+                <span>Sentence Only + Type Answer (No Hints)</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN GAMEPLAY SCREEN -->
+    <div id="game-screen" class="hidden">
+        <div class="header">
+            <span class="badge" id="chapter-badge">Chapter 2</span>
+            <span class="badge" id="level-badge">Basic</span>
+            <span class="badge" id="word-count-badge">Question 1/10</span>
+            <span class="score-box">⭐ Score: <span id="score">0</span></span>
+        </div>
+
+        <div class="attempts-tracker" id="attempts-display">Attempts Left: 3/3</div>
+
+        <div class="clue-box">
+            <div class="sentence" id="sentence">Loading...</div>
+            <div class="hint" id="hint"></div>
+        </div>
+
+        <button class="audio-btn" id="audio-btn" onclick="speakSentence()">
+            🔊 Listen Sentence
+        </button>
+
+        <!-- Basic Level Choices -->
+        <div class="options-grid hidden" id="options-container"></div>
+
+        <!-- Medium/Advanced Input Form -->
+        <form id="spelling-form" class="hidden" onsubmit="checkTypedAnswer(event)">
+            <div class="input-group">
+                <input type="text" id="user-input" placeholder="Type answer here..." autocomplete="off" autofocus />
+                <button type="submit" class="btn-submit" id="submit-btn">Submit 🚀</button>
+            </div>
+        </form>
+
+        <div class="feedback" id="feedback"></div>
+
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+    </div>
+
+    <!-- SUMMARY SCREEN -->
+    <div id="results-screen" class="hidden">
+        <h2>🎉 Trial Completed!</h2>
+        <p style="font-size: 1.2em;" id="encouraging-msg"></p>
+        <p style="font-size: 1.6em; font-weight: bold; color: var(--primary);" id="final-score"></p>
+        <button class="restart-btn" onclick="returnToMenu()">Play Another Trial 🔄</button>
+    </div>
+</div>
+
+<script>
+    // Chapter 1 Vocabulary Pool (Extracted from textbook images)
+    const ch1Vocab = [
+        { word: "species", sentence: "The best eco-heroes on our planet are the many ________ of plants and animals.", meaning: "物種 (Groups of living organisms)" },
+        { word: "habitats", sentence: "In their natural ________, these plants and animals live in balance.", meaning: "棲息地 (Natural home environment of plants/animals)" },
+        { word: "sustainably", sentence: "Non-human animals live ________ without harming Earth's natural resources.", meaning: "可持續地 (In a way that protects the environment long term)" },
+        { word: "coexisted", sentence: "For a long time, humans ________ with nature in peaceful, sustainable ways.", meaning: "共存 (Lived together at the same time)" },
+        { word: "widespread", sentence: "Smoke from factories causes ________ pollution in our atmosphere.", meaning: "廣泛的 (Found or distributed over a large area)" },
+        { word: "consumerism", sentence: "The increase of mass ________ leads to huge amounts of extra waste.", meaning: "消費主義 (The buying and spending habits of society)" },
+        { word: "threatened", sentence: "Many species on Earth are currently endangered or ________.", meaning: "受到威脅的 (At risk of harm or extinction)" },
+        { word: "emerged", sentence: "In recent decades, millions of eco-heroes have ________ around the globe.", meaning: "出現 / 湧現 (Came into view or became known)" },
+        { word: "deterioration", sentence: "Eco-heroes are working to prevent further environmental ________.", meaning: "惡化 / 退化 (The process of becoming worse)" },
+        { word: "environmentalists", sentence: "________ campaign in all kinds of ways to protect air, soil, and water.", meaning: "環保人士 (People who actively work to protect nature)" },
+        { word: "ecosystems", sentence: "Environmentalists work hard to protect fragile local ________.", meaning: "生態系統 (Communities of interacting living organisms)" },
+        { word: "impact", sentence: "Every small eco-action adds up to one big positive ________ on Earth.", meaning: "影響 / 作用 (A marked effect or influence)" },
+        { word: "rinse", sentence: "Turn the tap on for the final ________ after brushing your teeth.", meaning: "沖洗 / 漱口 (Washing with clean water)" },
+        { word: "leftover", sentence: "You can feed ________ leafy vegetables to your pet rabbits.", meaning: "剩餘的 (Remaining after the main part has been used)" },
+        { word: "prevention", sentence: "The Royal Society for the ________ of Cruelty to Animals protects pets.", meaning: "預防 / 防止 (The action of stopping something bad from happening)" }
+    ];
+
+    // Chapter 2 Vocabulary Pool (30 Words)
+    const ch2Vocab = [
+        { word: "launched", sentence: "Earth Day was officially ________ in 1970 in the USA.", meaning: "推出 / 啟動 (Formally introduced or started)" },
+        { word: "enact", sentence: "The government passed new laws to ________ clean air standards.", meaning: "制定 / 頒佈 (To make a bill into law)" },
+        { word: "endangered", sentence: "We must pass laws to protect ________ species from extinction.", meaning: "瀕危的 (At risk of going extinct)" },
+        { word: "establish", sentence: "They decided to ________ the Environmental Protection Agency.", meaning: "建立 / 創立 (To set up or create)" },
+        { word: "investigate", sentence: "The agency's role is to ________ environmental issues.", meaning: "調查 / 研究 (To examine or research)" },
+        { word: "enforce", sentence: "Police officers work hard to ________ environmental laws.", meaning: "執行 / 貫徹 (To compel obedience to laws)" },
+        { word: "contribution", sentence: "An eco-action makes a positive ________ to nature.", meaning: "貢獻 (An action that helps achieve a goal)" },
+        { word: "internationally", sentence: "Earth Day was launched ________ across many nations.", meaning: "在國際上 (Involving multiple countries)" },
+        { word: "participate", sentence: "Millions of students ________ in Earth Day activities.", meaning: "參與 / 參加 (To take part in an activity)" },
+        { word: "campaigns", sentence: "They organized clean-up ________ and environmental walks.", meaning: "活動 / 宣傳運動 (Organized series of actions)" },
+        { word: "dedicated", sentence: "These eco-heroes are ________ to preserving our planet.", meaning: "盡心盡力的 (Devoted to a purpose)" },
+        { word: "preserve", sentence: "We need to ________ Earth for future generations.", meaning: "保育 / 保護 (To maintain and keep safe)" },
+        { word: "founder", sentence: "Shimon Schwarzschild is the ________ of Action for Nature.", meaning: "創辦人 (Person who sets up an organization)" },
+        { word: "protest", sentence: "He started a campaign to ________ the hunting of songbirds.", meaning: "抗議 / 反對 (To publicly object)" },
+        { word: "organisations", sentence: "An increasing number of eco-________ have been set up.", meaning: "機構 / 組織 (Groups organized for a purpose)" },
+        { word: "atmosphere", sentence: "Pollution in the air affects Earth's ________ and climate.", meaning: "大氣層 (The layer of gases around Earth)" },
+        { word: "waterways", sentence: "Trash in rivers pollutes local ________.", meaning: "水路 / 水道 (Rivers or bodies of water)" },
+        { word: "inspired", sentence: "Earth Day ________ millions of people to take action.", meaning: "啟發 / 鼓舞 (Filled with desire to act)" },
+        { word: "environmental", sentence: "The EPA investigates ________ issues regularly.", meaning: "環境的 (Relating to the natural world)" },
+        { word: "celebrated", sentence: "Earth Day is ________ every year on April 22nd.", meaning: "慶祝 (Observed with special events)" },
+        { word: "communities", sentence: "People in local ________ participate in green projects.", meaning: "社區 (Groups of people living in an area)" },
+        { word: "planet", sentence: "It is essential to take care of ________ Earth.", meaning: "星球 / 地球 (A celestial body like Earth)" },
+        { word: "completion", sentence: "The ceremony marked the ________ of the new temple.", meaning: "完成 (The state of finishing something)" },
+        { word: "inspire", sentence: "Eco-heroes want to ________ young people to protect nature.", meaning: "鼓舞 / 激勵 (To motivate others)" },
+        { word: "throughout", sentence: "They organize activities ________ the whole year.", meaning: "貫穿 / 在整個期間 (In every part of a period)" },
+        { word: "countries", sentence: "Over 170 ________ take part in Earth Day.", meaning: "國家 (Nations with their own governments)" },
+        { word: "officially", sentence: "Earth Day was ________ launched worldwide in 1990.", meaning: "正式地 (Formally or by authority)" },
+        { word: "resources", sentence: "People donate their time and ________ to protect nature.", meaning: "資源 (Assets or supplies used to help)" },
+        { word: "encourages", sentence: "Action for Nature ________ kids to take green actions.", meaning: "鼓勵 (Gives support or confidence)" },
+        { word: "discovered", sentence: "He ________ that songbirds were being hunted.", meaning: "發現 (Found out or learned new information)" }
+    ];
+
+    let selectedChapter = 'ch2';
+    let gameLevel = 'basic';
+    let currentQuestions = [];
+    let currentIndex = 0;
+    let score = 0;
+    let attemptsLeft = 3;
+
+    function selectChapter(ch) {
+        selectedChapter = ch;
+        document.getElementById('btn-ch1').className = ch === 'ch1' ? 'btn-ch selected' : 'btn-ch';
+        document.getElementById('btn-ch2').className = ch === 'ch2' ? 'btn-ch selected' : 'btn-ch';
+        document.getElementById('btn-both').className = ch === 'both' ? 'btn-ch selected' : 'btn-ch';
+    }
+
+    function startGame(level) {
+        gameLevel = level;
+        score = 0;
+        currentIndex = 0;
+        
+        let pool = [];
+        if (selectedChapter === 'ch1') pool = [...ch1Vocab];
+        else if (selectedChapter === 'ch2') pool = [...ch2Vocab];
+        else pool = [...ch1Vocab, ...ch2Vocab];
+
+        const shuffled = pool.sort(() => 0.5 - Math.random());
+        currentQuestions = shuffled.slice(0, 10);
+
+        document.getElementById('setup-screen').classList.add('hidden');
+        document.getElementById('results-screen').classList.add('hidden');
+        document.getElementById('game-screen').classList.remove('hidden');
+
+        document.getElementById('chapter-badge').textContent = 
+            selectedChapter === 'ch1' ? '📘 Chapter 1' : selectedChapter === 'ch2' ? '🌿 Chapter 2' : '🌟 Ch 1 & 2 Mix';
+
+        document.getElementById('level-badge').textContent = 
+            level === 'basic' ? '🟢 Basic' : level === 'medium' ? '🟡 Medium' : '🔴 Advanced Mode';
+
+        document.getElementById('score').textContent = score;
+
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        attemptsLeft = 3;
+        const currentItem = currentQuestions[currentIndex];
+
+        document.getElementById('feedback').textContent = '';
+        document.getElementById('feedback').className = 'feedback';
+        document.getElementById('word-count-badge').textContent = `Question ${currentIndex + 1}/10`;
+        document.getElementById('attempts-display').textContent = `Attempts Left: ${attemptsLeft}/3`;
+        document.getElementById('sentence').textContent = currentItem.sentence;
+
+        const progressPercent = (currentIndex / 10) * 100;
+        document.getElementById('progress-bar').style.width = progressPercent + '%';
+
+        const hintEl = document.getElementById('hint');
+        const optionsContainer = document.getElementById('options-container');
+        const spellingForm = document.getElementById('spelling-form');
+        const audioBtn = document.getElementById('audio-btn');
+
+        if (gameLevel === 'basic') {
+            hintEl.textContent = `💡 Meaning: ${currentItem.meaning}`;
+            optionsContainer.classList.remove('hidden');
+            spellingForm.classList.add('hidden');
+            audioBtn.classList.remove('hidden');
+
+            generateMultipleChoice(currentItem.word);
+            setTimeout(() => speakSentence(), 300);
+
+        } else if (gameLevel === 'medium') {
+            hintEl.textContent = `💡 Meaning: ${currentItem.meaning}`;
+            optionsContainer.classList.add('hidden');
+            spellingForm.classList.remove('hidden');
+            audioBtn.classList.add('hidden');
+
+            document.getElementById('user-input').value = '';
+            document.getElementById('user-input').disabled = false;
+            document.getElementById('submit-btn').disabled = false;
+            document.getElementById('user-input').focus();
+
+        } else if (gameLevel === 'advanced') {
+            hintEl.textContent = '🔒 Exam Mode: No hints available!';
+            optionsContainer.classList.add('hidden');
+            spellingForm.classList.remove('hidden');
+            audioBtn.classList.add('hidden');
+
+            document.getElementById('user-input').value = '';
+            document.getElementById('user-input').disabled = false;
+            document.getElementById('submit-btn').disabled = false;
+            document.getElementById('user-input').focus();
+        }
+    }
+
+    function generateMultipleChoice(correctWord) {
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
+
+        const fullPool = [...ch1Vocab, ...ch2Vocab];
+        const distractors = fullPool
+            .filter(item => item.word !== correctWord)
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 2)
+            .map(item => item.word);
+
+        const choices = [correctWord, ...distractors].sort(() => 0.5 - Math.random());
+
+        choices.forEach(choice => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-option';
+            btn.textContent = choice;
+            btn.onclick = () => handleChoiceSelect(choice, correctWord, btn);
+            optionsContainer.appendChild(btn);
+        });
+    }
+
+    function handleChoiceSelect(selectedWord, correctWord, buttonElement) {
+        const feedbackEl = document.getElementById('feedback');
+
+        if (selectedWord === correctWord) {
+            score += attemptsLeft === 3 ? 10 : attemptsLeft === 2 ? 7 : 4;
+            document.getElementById('score').textContent = score;
+            feedbackEl.textContent = '🎉 Excellent! Correct answer!';
+            feedbackEl.className = 'feedback correct';
+
+            disableOptions();
+            setTimeout(nextQuestion, 1200);
+        } else {
+            attemptsLeft--;
+            document.getElementById('attempts-display').textContent = `Attempts Left: ${attemptsLeft}/3`;
+            buttonElement.style.opacity = '0.4';
+            buttonElement.disabled = true;
+
+            if (attemptsLeft > 0) {
+                feedbackEl.textContent = `❌ Try again! You have ${attemptsLeft} attempt(s) left.`;
+                feedbackEl.className = 'feedback warning';
+            } else {
+                feedbackEl.innerHTML = `💡 The correct answer was: <strong>${correctWord.toUpperCase()}</strong>`;
+                feedbackEl.className = 'feedback reveal';
+                disableOptions();
+                setTimeout(nextQuestion, 2500);
+            }
+        }
+    }
+
+    function disableOptions() {
+        const buttons = document.querySelectorAll('.btn-option');
+        buttons.forEach(btn => btn.disabled = true);
+    }
+
+    function checkTypedAnswer(e) {
+        e.preventDefault();
+        const userInput = document.getElementById('user-input').value.trim().toLowerCase();
+        const correctWord = currentQuestions[currentIndex].word.toLowerCase();
+        const feedbackEl = document.getElementById('feedback');
+
+        if (!userInput) return;
+
+        if (userInput === correctWord) {
+            score += attemptsLeft === 3 ? 10 : attemptsLeft === 2 ? 7 : 4;
+            document.getElementById('score').textContent = score;
+            feedbackEl.textContent = '🎉 Great job! Perfect spelling!';
+            feedbackEl.className = 'feedback correct';
+
+            document.getElementById('user-input').disabled = true;
+            document.getElementById('submit-btn').disabled = true;
+            setTimeout(nextQuestion, 1200);
+        } else {
+            attemptsLeft--;
+            document.getElementById('attempts-display').textContent = `Attempts Left: ${attemptsLeft}/3`;
+
+            if (attemptsLeft > 0) {
+                feedbackEl.textContent = `❌ Not quite! ${attemptsLeft} attempt(s) left. Try again!`;
+                feedbackEl.className = 'feedback warning';
+            } else {
+                feedbackEl.innerHTML = `💡 Out of tries! Correct spelling: <u><strong>${correctWord.toUpperCase()}</strong></u>`;
+                feedbackEl.className = 'feedback reveal';
+
+                document.getElementById('user-input').disabled = true;
+                document.getElementById('submit-btn').disabled = true;
+                setTimeout(nextQuestion, 2800);
+            }
+        }
+    }
+
+    function nextQuestion() {
+        currentIndex++;
+        if (currentIndex < 10) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function speakSentence() {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const currentItem = currentQuestions[currentIndex];
+            const textToSpeak = currentItem.sentence.replace('________', currentItem.word);
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            
+            const voices = window.speechSynthesis.getVoices();
+            let femaleVoice = voices.find(v => 
+                v.lang.startsWith('en') && 
+                (v.name.includes('Samantha') || v.name.includes('Zira') || v.name.includes('Victoria') || v.name.includes('Google US English'))
+            ) || voices.find(v => v.lang.startsWith('en'));
+
+            if (femaleVoice) utterance.voice = femaleVoice;
+            utterance.rate = 0.95;
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    function showResults() {
+        document.getElementById('game-screen').classList.add('hidden');
+        document.getElementById('results-screen').classList.remove('hidden');
+        document.getElementById('final-score').textContent = `Final Score: ${score} / 100 Points`;
+
+        const msgEl = document.getElementById('encouraging-msg');
+        if (score >= 90) {
+            msgEl.textContent = "🌟 Outstanding! You are completely ready for your English examination! Keep up the amazing work!";
+        } else if (score >= 70) {
+            msgEl.textContent = "👍 Great effort! You know most of the vocabulary well. Play one more trial to get top marks!";
+        } else {
+            msgEl.textContent = "💪 Excellent practice! Keep playing a few more trials to master all spellings and meanings!";
+        }
+    }
+
+    function returnToMenu() {
+        document.getElementById('results-screen').classList.add('hidden');
+        document.getElementById('setup-screen').classList.remove('hidden');
+    }
+
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    }
+</script>
+
+</body>
+</html>
