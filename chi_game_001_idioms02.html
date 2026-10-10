@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>單元二成語溫習大挑戰 🏆</title>
+  <style>
+    :root {
+      --primary-color: #4F46E5;
+      --primary-hover: #4338CA;
+      --secondary-color: #10B981;
+      --accent-color: #EF4444;
+      --warning-color: #F59E0B;
+      --bg-color: #F3F4F6;
+      --card-bg: #FFFFFF;
+      --text-main: #1F2937;
+      --text-muted: #6B7280;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 8px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 16px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .title-banner {
+      background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+      color: white;
+      padding: 18px 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      opacity: 0.9;
+      margin-top: 4px;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .nav-btn {
+      flex: 1;
+      max-width: 200px;
+      padding: 12px 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      background-color: white;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .nav-btn.active {
+      background-color: var(--primary-color);
+      color: white;
+      box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      position: relative;
+    }
+
+    .stats-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #F9FAFB;
+      border: 1px solid #E5E7EB;
+      padding: 12px 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .lives {
+      color: var(--accent-color);
+      font-size: 1.1rem;
+    }
+
+    .score {
+      color: var(--primary-color);
+    }
+
+    /* --- Level 1 樣式 --- */
+    .instruction-tip {
+      background-color: #EEF2FF;
+      color: #3730A3;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .game-board-l1 {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 720px) {
+      .game-board-l1 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .idiom-pool {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #F9FAFB;
+      border: 2px dashed #D1D5DB;
+      padding: 14px;
+      border-radius: 14px;
+      min-height: 380px;
+    }
+
+    .idiom-card {
+      background: linear-gradient(135deg, #3B82F6, #2563EB);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      cursor: grab;
+      user-select: none;
+      box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+      transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+    }
+
+    .idiom-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px -2px rgba(37, 99, 235, 0.3);
+    }
+
+    .idiom-card:active {
+      cursor: grabbing;
+    }
+
+    .idiom-card.selected {
+      outline: 4px solid var(--warning-color);
+      transform: scale(1.03);
+      animation: pulse 1.5s infinite;
+    }
+
+    .idiom-card.matched {
+      display: none;
+    }
+
+    .def-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      max-height: 520px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+
+    .def-card {
+      background: #FFFFFF;
+      border: 2px solid #E5E7EB;
+      padding: 12px 16px;
+      border-radius: 12px;
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .def-card:hover {
+      border-color: var(--primary-color);
+      background-color: #F5F3FF;
+    }
+
+    .def-text {
+      font-size: 0.98rem;
+      line-height: 1.4;
+      color: #374151;
+      padding-right: 10px;
+    }
+
+    .def-card.correct {
+      border-style: solid;
+      border-color: var(--secondary-color);
+      background-color: #ECFDF5;
+      cursor: default;
+    }
+
+    .def-card.wrong-flash {
+      animation: shake 0.4s ease;
+      border-color: var(--accent-color);
+      background-color: #FEF2F2;
+    }
+
+    .matched-badge {
+      background: var(--secondary-color);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      white-space: nowrap;
+      box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+    }
+
+    /* --- Level 2 樣式 --- */
+    .l2-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: #E5E7EB;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--primary-color);
+      width: 20%;
+      transition: width 0.3s ease;
+    }
+
+    .question-box {
+      font-size: 1.25rem;
+      line-height: 1.8;
+      background: #F9FAFB;
+      padding: 24px;
+      border-radius: 14px;
+      border-left: 6px solid var(--primary-color);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .blank-space {
+      display: inline-block;
+      min-width: 110px;
+      border-bottom: 3px solid var(--primary-color);
+      text-align: center;
+      color: var(--primary-color);
+      font-weight: 800;
+      padding: 0 8px;
+      margin: 0 4px;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .option-btn {
+      padding: 16px 20px;
+      font-size: 1.15rem;
+      border: 2px solid #E5E7EB;
+      background: white;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--text-main);
+      text-align: left;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      background: #EEF2FF;
+      border-color: var(--primary-color);
+      transform: translateX(4px);
+    }
+
+    .option-btn.correct {
+      background: #ECFDF5 !important;
+      border-color: var(--secondary-color) !important;
+      color: #065F46 !important;
+    }
+
+    .option-btn.wrong {
+      background: #FEF2F2 !important;
+      border-color: var(--accent-color) !important;
+      color: #991B1B !important;
+    }
+
+    /* --- 彈出結算視窗 --- */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(17, 24, 39, 0.6);
+      backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 32px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 420px;
+      width: 90%;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .modal-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .modal-score {
+      font-size: 3rem;
+      color: var(--primary-color);
+      font-weight: 900;
+      margin: 12px 0;
+    }
+
+    .modal-desc {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .restart-btn {
+      padding: 14px 32px;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .restart-btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+    }
+
+    canvas#confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 99;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1.03); }
+      50% { transform: scale(1.07); }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <header>
+    <div class="title-banner">
+      <h1>📚 單元二成語溫習小遊戲</h1>
+      <p class="subtitle">專為小學生設計 · 趣味互動溫習</p>
+    </div>
+    <div class="nav-buttons">
+      <button class="nav-btn active" id="btn-lvl1" onclick="switchLevel(1)">Level 1: 成語配對</button>
+      <button class="nav-btn" id="btn-lvl2" onclick="switchLevel(2)">Level 2: 填空挑戰</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="stats-bar">
+      <span class="score" id="score-text">得分: 0 / 100</span>
+      <span class="lives" id="lives-text">改正機會: ❤️❤️❤️</span>
+    </div>
+
+    <!-- Level 1 遊戲區 -->
+    <div id="level1-screen">
+      <div class="instruction-tip">
+        💡 <b>玩法說明：</b>用手指/滑鼠將成語<b>拖放</b>到對應解釋，或先<b>點擊選取成語</b>再<b>點擊解釋</b>進行配對。
+      </div>
+      <div class="game-board-l1">
+        <div class="idiom-pool" id="idiom-pool"></div>
+        <div class="def-grid" id="def-grid"></div>
+      </div>
+    </div>
+
+    <!-- Level 2 遊戲區 -->
+    <div id="level2-screen" style="display: none;">
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="l2-progress"></div>
+      </div>
+      <div class="l2-container">
+        <div class="question-box" id="l2-question">
+          載入題目中...
+        </div>
+        <div class="options-grid" id="l2-options"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 結算彈窗 -->
+  <div class="modal" id="result-modal">
+    <div class="modal-content">
+      <div class="modal-title" id="modal-title">🎉 完成挑戰！</div>
+      <div class="modal-score" id="modal-score">100 分</div>
+      <p class="modal-desc" id="modal-desc">表現得非常好，成語掌握得很棒！</p>
+      <button class="restart-btn" onclick="restartCurrentLevel()">再玩一次 🔄</button>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================
+       1. 單元二指定八個成語資料庫 (含正確釋義與例句)
+       ========================================== */
+    const IDIOMS_DATA = [
+      {
+        id: 1,
+        word: "甘之如飴",
+        meaning: "甘：甜；飴：麥芽糖。形容非常樂意承擔艱苦的事情，或處於困境卻能泰然處之。",
+        sentences: [
+          "為了照顧患病的母親，她日夜奔波，但她____，從不喊苦抱怨。",
+          "只要能實現心中的音樂夢想，再多的辛苦他也____。",
+          "雖然科研工作既艱苦又枯燥，但科學家們____，樂在其中。"
+        ]
+      },
+      {
+        id: 2,
+        word: "倒屣相迎",
+        meaning: "屣：鞋子。形容熱情而迫切地迎接貴賓，連鞋子穿反了都顧不上。",
+        sentences: [
+          "得知多年的老友遠道而來，他連忙____，展現出極大的熱情。",
+          "這檔節目能邀請到著名學者親自到訪，節目組自然是____，不敢怠慢。",
+          "聽說有貴客登門拜訪，大師熱情地____，親自到門口接引。"
+        ]
+      },
+      {
+        id: 3,
+        word: "匹夫之勇",
+        meaning: "匹夫：古時指平民，後指個人。形容僅憑個人血氣衝動的勇敢，缺乏智謀。",
+        sentences: [
+          "遇到突發危機時要冷靜思考應對，切忌憑著____盲目衝動。",
+          "他光有____而缺乏指揮大局的智慧，難以擔當領袖重任。",
+          "真正的勇敢是智勇雙全、審時度勢，而不是單純逞____。"
+        ]
+      },
+      {
+        id: 4,
+        word: "高山流水",
+        meaning: "原指春秋時期伯牙與鍾子期的古琴名曲。後比喻知音難覓或樂曲高妙絕倫。",
+        sentences: [
+          "這兩位音樂家惺惺相惜，合奏出一曲堪稱____的絕妙樂章。",
+          "世上知音難求，能遇到真正賞識自己才華的人，無異於遇見____。",
+          "他們倆相知相惜多年，這份深厚的情誼正如____般純粹。"
+        ]
+      },
+      {
+        id: 5,
+        word: "肝膽相照",
+        meaning: "比喻坦誠相見，真心待人，彼此可以共患難。",
+        sentences: [
+          "他們是多年____的好朋友，彼此之間從無秘密。",
+          "在遇到巨大困難時，只有____的朋友才會無條件對你伸出援手。",
+          "兩人共同經歷過無數風雨，結下了____的深厚情誼。"
+        ]
+      },
+      {
+        id: 6,
+        word: "望梅止渴",
+        meaning: "比喻願望無法實現，只能用空想來慰藉自己。",
+        sentences: [
+          "光是看著旅遊圖鑑空想，不過是____，不如親自安排行程走一趟。",
+          "如果不付諸實際行動，再完美的目標也只是____罷了。",
+          "肚子非常餓的時候看著美食影片，也只能稍微____，根本無法填飽肚子。"
+        ]
+      },
+      {
+        id: 7,
+        word: "刎頸之交",
+        meaning: "刎頸：割脖子。指同生死、共患難，甚至可以為對方獻出生命的好朋友。",
+        sentences: [
+          "廉頗與藺相如互相諒解後，成為同生共死的____。",
+          "他們倆在戰場上經歷過生死考驗，建立了____的堅固友誼。",
+          "人生若能擁有一個____的知心好友，便是最寶貴的財富。"
+        ]
+      },
+      {
+        id: 8,
+        word: "人面桃花",
+        meaning: "形容景物依舊，而心愛或懷念的人卻已不在的感傷情懷。",
+        sentences: [
+          "重遊故地，景色依然優美，卻已是____，令人感到無限感傷。",
+          "時隔多年再次回到母校，不禁讓人感嘆____、物是人非。",
+          "看著舊相片中昔日熱鬧的場面，如今卻____，讓人唏噓不已。"
+        ]
+      }
+    ];
+
+    // 4 個干擾解釋（用於 Level 1 湊足 12 個解釋選項）
+    const EXTRA_DEFINITIONS = [
+      "比喻做事不加思考，憑一時興趣隨興所至。",
+      "比喻事情非常微小輕微，不值得掛齿或一提。",
+      "比喻學問文章高深莫測，一般人難以企及。",
+      "比喻做事堅持不懈，即使遇到困難也不放棄。"
+    ];
+
+    /* ==========================================
+       2. Web Audio 簡易音效生成器 (無需外部音訊檔)
+       ========================================== */
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    function playSound(type) {
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (type === 'correct') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.25);
+      } else if (type === 'wrong') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(180, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(130, audioCtx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+      } else if (type === 'win') {
+        const now = audioCtx.currentTime;
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, idx) => {
+          const o = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          o.connect(g);
+          g.connect(audioCtx.destination);
+          o.frequency.value = freq;
+          g.gain.setValueAtTime(0.2, now + idx * 0.1);
+          g.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.1 + 0.3);
+          o.start(now + idx * 0.1);
+          o.stop(now + idx * 0.1 + 0.3);
+        });
+      }
+    }
+
+    /* ==========================================
+       3. 全域變數與通用函式
+       ========================================== */
+    let currentLevel = 1;
+    let score = 0;
+    let lives = 3;
+    let selectedIdiomId = null;
+    let matchedCount = 0;
+
+    let l2Questions = [];
+    let l2CurrentIndex = 0;
+
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function switchLevel(lvl) {
+      currentLevel = lvl;
+      document.getElementById('btn-lvl1').classList.toggle('active', lvl === 1);
+      document.getElementById('btn-lvl2').classList.toggle('active', lvl === 2);
+      document.getElementById('level1-screen').style.display = lvl === 1 ? 'block' : 'none';
+      document.getElementById('level2-screen').style.display = lvl === 2 ? 'block' : 'none';
+      restartCurrentLevel();
+    }
+
+    function restartCurrentLevel() {
+      document.getElementById('result-modal').style.display = 'none';
+      score = 0;
+      lives = 3;
+      selectedIdiomId = null;
+      matchedCount = 0;
+      updateHeaderStats();
+
+      if (currentLevel === 1) {
+        initLevel1();
+      } else {
+        initLevel2();
+      }
+    }
+
+    function updateHeaderStats() {
+      if (currentLevel === 1) {
+        document.getElementById('score-text').innerText = `得分: ${Math.round(score)} / 100`;
+        let heartStr = "❤️".repeat(lives);
+        if (lives === 0) heartStr = "❌ 已無";
+        document.getElementById('lives-text').innerText = `改正機會: ${heartStr}`;
+        document.getElementById('lives-text').style.display = 'inline';
+      } else {
+        document.getElementById('score-text').innerText = `得分: ${score} / 100`;
+        document.getElementById('lives-text').style.display = 'none';
+      }
+    }
+
+    /* ==========================================
+       4. Level 1 邏輯 (8成語 + 12解釋)
+       ========================================== */
+    function initLevel1() {
+      const idiomPoolEl = document.getElementById('idiom-pool');
+      const defGridEl = document.getElementById('def-grid');
+      idiomPoolEl.innerHTML = '';
+      defGridEl.innerHTML = '';
+
+      // 每次載入皆洗牌成語與解釋
+      const shuffledIdioms = shuffle(IDIOMS_DATA);
+
+      let allDefs = IDIOMS_DATA.map(item => ({ idiomId: item.id, meaning: item.meaning }));
+      EXTRA_DEFINITIONS.forEach((def, index) => {
+        allDefs.push({ idiomId: `extra_${index}`, meaning: def });
+      });
+      allDefs = shuffle(allDefs);
+
+      // 渲染成語卡片
+      shuffledIdioms.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'idiom-card';
+        card.innerText = item.word;
+        card.dataset.id = item.id;
+        card.draggable = true;
+
+        card.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', item.id);
+        });
+
+        card.addEventListener('click', () => {
+          if (card.classList.contains('matched')) return;
+          
+          if (selectedIdiomId === item.id) {
+            selectedIdiomId = null;
+            card.classList.remove('selected');
+          } else {
+            document.querySelectorAll('.idiom-card').forEach(c => c.classList.remove('selected'));
+            selectedIdiomId = item.id;
+            card.classList.add('selected');
+          }
+        });
+
+        idiomPoolEl.appendChild(card);
+      });
+
+      // 渲染解釋欄位
+      allDefs.forEach(defObj => {
+        const slot = document.createElement('div');
+        slot.className = 'def-card';
+        slot.dataset.idiomId = defObj.idiomId;
+        slot.innerHTML = `<div class="def-text">${defObj.meaning}</div><div class="status-slot"></div>`;
+
+        slot.addEventListener('dragover', (e) => e.preventDefault());
+
+        slot.addEventListener('drop', (e) => {
+          e.preventDefault();
+          const draggedId = e.dataTransfer.getData('text/plain');
+          checkMatchL1(draggedId, defObj.idiomId, slot);
+        });
+
+        slot.addEventListener('click', () => {
+          if (selectedIdiomId && !slot.classList.contains('correct')) {
+            checkMatchL1(selectedIdiomId, defObj.idiomId, slot);
+          }
+        });
+
+        defGridEl.appendChild(slot);
+      });
+    }
+
+    function checkMatchL1(droppedIdiomId, targetIdiomId, slotElement) {
+      if (slotElement.classList.contains('correct') || lives <= 0) return;
+
+      const idiomCard = document.querySelector(`.idiom-card[data-id="${droppedIdiomId}"]`);
+      if (!idiomCard) return;
+
+      if (String(droppedIdiomId) === String(targetIdiomId)) {
+        // 答對配對
+        playSound('correct');
+        slotElement.classList.add('correct');
+        slotElement.querySelector('.status-slot').innerHTML = `<span class="matched-badge">${idiomCard.innerText}</span>`;
+        idiomCard.classList.add('matched');
+        
+        score += 12.5; // 8題，每題12.5分 = 100分
+        matchedCount++;
+        selectedIdiomId = null;
+        updateHeaderStats();
+
+        if (matchedCount === IDIOMS_DATA.length) {
+          setTimeout(() => {
+            playSound('win');
+            triggerConfetti();
+            endGame(`🎉 太厲害了！全部成語正確配對！`, 100);
+          }, 400);
+        }
+      } else {
+        // 答錯退回
+        playSound('wrong');
+        lives--;
+        updateHeaderStats();
+        
+        slotElement.classList.add('wrong-flash');
+        setTimeout(() => slotElement.classList.remove('wrong-flash'), 500);
+
+        selectedIdiomId = null;
+        idiomCard.classList.remove('selected');
+
+        if (lives <= 0) {
+          setTimeout(() => {
+            endGame(`💔 三次改正機會已用完，再接再厲！`, Math.round(score));
+          }, 500);
+        }
+      }
+    }
+
+    /* ==========================================
+       5. Level 2 邏輯 (例句題庫抽取5題，3選項)
+       ========================================== */
+    function initLevel2() {
+      // 建立24題完整題庫
+      let pool = [];
+      IDIOMS_DATA.forEach(idiom => {
+        idiom.sentences.forEach(sentence => {
+          pool.push({
+            sentence: sentence,
+            correctIdiom: idiom.word,
+            idiomId: idiom.id
+          });
+        });
+      });
+
+      // 隨機抽取 5 題
+      l2Questions = shuffle(pool).slice(0, 5);
+      l2CurrentIndex = 0;
+      renderL2Question();
+    }
+
+    function renderL2Question() {
+      if (l2CurrentIndex >= l2Questions.length) {
+        playSound('win');
+        triggerConfetti();
+        endGame(`🏆 Level 2 填空挑戰完成！`, score);
+        return;
+      }
+
+      // 更新進度條
+      const progressPercent = ((l2CurrentIndex + 1) / l2Questions.length) * 100;
+      document.getElementById('l2-progress').style.width = `${progressPercent}%`;
+
+      const qData = l2Questions[l2CurrentIndex];
+      const qBox = document.getElementById('l2-question');
+      const optionsGrid = document.getElementById('l2-options');
+
+      qBox.innerHTML = `<b>第 ${l2CurrentIndex + 1} / 5 題：</b><br>${qData.sentence.replace('____', '<span class="blank-space">？</span>')}`;
+      optionsGrid.innerHTML = '';
+
+      // 隨機揀選 2 個干擾選項
+      const otherIdioms = IDIOMS_DATA.filter(i => i.word !== qData.correctIdiom);
+      const wrongChoices = shuffle(otherIdioms).slice(0, 2).map(i => i.word);
+      const allChoices = shuffle([qData.correctIdiom, ...wrongChoices]);
+
+      allChoices.forEach(choice => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `<span>${choice}</span><span style="opacity: 0.5;">➜</span>`;
+
+        btn.onclick = () => {
+          const allBtns = optionsGrid.querySelectorAll('.option-btn');
+          allBtns.forEach(b => b.disabled = true);
+
+          if (choice === qData.correctIdiom) {
+            playSound('correct');
+            btn.classList.add('correct');
+            score += 20; // 5題，每題20分 = 100分
+            updateHeaderStats();
+          } else {
+            playSound('wrong');
+            btn.classList.add('wrong');
+            allBtns.forEach(b => {
+              if (b.innerText.includes(qData.correctIdiom)) b.classList.add('correct');
+            });
+          }
+
+          setTimeout(() => {
+            l2CurrentIndex++;
+            renderL2Question();
+          }, 1200);
+        };
+
+        optionsGrid.appendChild(btn);
+      });
+    }
+
+    /* ==========================================
+       6. 遊戲結算與彩花效果
+       ========================================== */
+    function endGame(title, finalScore) {
+      document.getElementById('modal-title').innerText = title;
+      document.getElementById('modal-score').innerText = `${finalScore} 分`;
+      
+      let desc = "持續溫習，熟能生巧，下次一定能拿滿分！";
+      if (finalScore === 100) desc = "太棒了！您完全精通了這八個成語的用法與釋義！🌟";
+      else if (finalScore >= 60) desc = "表現優異！再稍微溫習一下不熟的成語就更完美了！👍";
+      
+      document.getElementById('modal-desc').innerText = desc;
+      document.getElementById('result-modal').style.display = 'flex';
+    }
+
+    function triggerConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const pieces = [];
+      const colors = ['#4F46E5', '#10B981', '#F59E0B', '#EF4444', '#EC4899', '#8B5CF6'];
+
+      for (let i = 0; i < 80; i++) {
+        pieces.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          size: Math.random() * 8 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          speedY: Math.random() * 3 + 2,
+          speedX: Math.random() * 2 - 1,
+          rotation: Math.random() * 360
+        });
+      }
+
+      let animationFrame;
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+          p.y += p.speedY;
+          p.x += p.speedX;
+          p.rotation += 2;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+        });
+
+        if (pieces.some(p => p.y < canvas.height)) {
+          animationFrame = requestAnimationFrame(render);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      render();
+    }
+
+    // 初始化第一關
+    initLevel1();
+  </script>
+</body>
+</html>
