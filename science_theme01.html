@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P.6 Biological World - Science Revision Suite</title>
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #e8f5e9;
+            --secondary: #0288d1;
+            --secondary-light: #e0f7fa;
+            --dark: #263238;
+            --light: #f4f6f8;
+            --accent: #f57c00;
+            --correct: #388e3c;
+            --wrong: #d32f2f;
+        }
+
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+        body { background-color: var(--light); color: var(--dark); padding: 20px; line-height: 1.5; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); overflow: hidden; }
+        
+        header { background: var(--primary); color: white; padding: 20px; text-align: center; }
+        header h1 { font-size: 1.8rem; margin-bottom: 5px; }
+        header p { opacity: 0.9; font-size: 0.95rem; }
+
+        nav { display: flex; background: #1b5e20; overflow-x: auto; }
+        nav button { flex: 1; padding: 14px 10px; border: none; background: transparent; color: white; font-weight: 600; cursor: pointer; transition: 0.2s; min-width: 120px; }
+        nav button.active, nav button:hover { background: var(--primary); border-bottom: 4px solid var(--accent); }
+
+        .tab-content { display: none; padding: 25px; }
+        .tab-content.active { display: block; }
+
+        .card { background: var(--light); border-left: 5px solid var(--primary); padding: 15px; margin-bottom: 20px; border-radius: 4px; }
+        .btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 15px; }
+        
+        button.action-btn { background: white; border: 2px solid #ccc; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; text-align: center; }
+        button.action-btn:hover { border-color: var(--primary); background: var(--primary-light); }
+        button.action-btn.correct { background: var(--correct) !important; color: white; border-color: var(--correct); }
+        button.action-btn.wrong { background: var(--wrong) !important; color: white; border-color: var(--wrong); }
+
+        /* Simulator Styles */
+        .micro-stage { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; align-items: center; margin: 20px 0; }
+        .lens-view { width: 220px; height: 220px; border-radius: 50%; border: 8px solid #333; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; box-shadow: inset 0 0 15px rgba(0,0,0,0.3); }
+        .specimen-text { font-size: 2rem; font-weight: bold; transition: transform 0.3s; }
+        .controls { flex: 1; min-width: 250px; }
+        
+        select, input[type="text"] { width: 100%; padding: 10px; margin: 8px 0 15px; border: 1px solid #ccc; border-radius: 6px; }
+
+        /* Scoreboard */
+        .score-box { display: flex; justify-content: space-between; align-items: center; font-weight: bold; margin-bottom: 15px; background: var(--secondary-light); padding: 10px 15px; border-radius: 6px; color: var(--secondary); }
+
+        /* Key Tree UI */
+        .tree-node { border: 2px dashed var(--secondary); padding: 15px; border-radius: 8px; background: white; text-align: center; margin: 15px 0; }
+        
+        .feedback { margin-top: 15px; font-weight: bold; min-height: 24px; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🧬 Biological World Interactive Revision</h1>
+        <p>St. Paul's Co-educational College Primary School - P.6 Science</p>
+    </header>
+
+    <nav>
+        <button class="nav-btn active" onclick="switchTab('tab1', this)">1. Life Processes</button>
+        <button class="nav-btn" onclick="switchTab('tab2', this)">2. Classification</button>
+        <button class="nav-btn" onclick="switchTab('tab3', this)">3. Key Identification</button>
+        <button class="nav-btn" onclick="switchTab('tab4', this)">4. Microscope Lab</button>
+    </nav>
+
+    <!-- TAB 1: 7 LIFE PROCESSES -->
+    <div id="tab1" class="tab-content active">
+        <div class="score-box">
+            <span>Score: <span id="t1-score">0</span> / <span id="t1-total">0</span></span>
+            <button onclick="initTab1()" style="padding: 5px 10px; cursor:pointer;">Reset</button>
+        </div>
+        <div class="card">
+            <h3>Scenario Blitz</h3>
+            <p id="t1-prompt" style="font-size: 1.1rem; margin-top: 10px; font-weight: 500;"></p>
+        </div>
+        <p>Select the corresponding common characteristic of living things:</p>
+        <div class="btn-grid" id="t1-options"></div>
+        <div class="feedback" id="t1-feedback"></div>
+    </div>
+
+    <!-- TAB 2: CLASSIFICATION SPEED SORT -->
+    <div id="tab2" class="tab-content">
+        <div class="score-box">
+            <span>Score: <span id="t2-score">0</span></span>
+            <button onclick="initTab2()" style="padding: 5px 10px; cursor:pointer;">Next Question</button>
+        </div>
+        <div class="card">
+            <h3 id="t2-question"></h3>
+        </div>
+        <div class="btn-grid" id="t2-options"></div>
+        <div class="feedback" id="t2-feedback"></div>
+    </div>
+
+    <!-- TAB 3: DICHOTOMOUS KEY IDENTIFICATION -->
+    <div id="tab3" class="tab-content">
+        <h3>Pond Animal Dichotomous Key Tool</h3>
+        <p>Select the features step-by-step to classify the mystery pond animal:</p>
+        
+        <div class="tree-node">
+            <h4 id="key-step-title">Step 1: Number of Legs</h4>
+            <p id="key-step-desc">Observe the legs of the specimen under study.</p>
+            <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center;" id="key-btn-container">
+                <!-- Dynamic choices -->
+            </div>
+        </div>
+
+        <div id="key-result" style="display:none;" class="card">
+            <h3>Identified Organism: <span id="organism-name" style="color: var(--primary);"></span></h3>
+            <p id="organism-desc"></p>
+            <button onclick="resetKey()" class="action-btn" style="margin-top: 10px;">Start Over</button>
+        </div>
+    </div>
+
+    <!-- TAB 4: MICROSCOPE LAB SIMULATOR -->
+    <div id="tab4" class="tab-content">
+        <h3>Microscope View & Magnification Simulator</h3>
+        <p>Observe how specimens appear upside down and laterally inverted under a light microscope.</p>
+        
+        <div class="micro-stage">
+            <div class="lens-view">
+                <span class="specimen-text" id="lens-specimen">P</span>
+            </div>
+            <div class="controls">
+                <label>Specimen Text/Letter:</label>
+                <input type="text" id="specimen-input" value="P" maxlength="8" oninput="updateMicroscope()">
+
+                <label>Eyepiece Lens:</label>
+                <select id="eyepiece-select" onchange="updateMicroscope()">
+                    <option value="10">10x</option>
+                </select>
+
+                <label>Objective Lens:</label>
+                <select id="objective-select" onchange="updateMicroscope()">
+                    <option value="4">4x (Low Power)</option>
+                    <option value="10">10x (Medium Power)</option>
+                    <option value="40">40x (High Power)</option>
+                </select>
+
+                <div class="card" style="margin-top: 10px;">
+                    <strong>Total Magnification:</strong> <span id="total-mag">40x</span><br>
+                    <small>Calculated as: Eyepiece Power × Objective Lens Power</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// --- GLOBAL TAB NAVIGATION ---
+function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
+}
+
+// --- GAME 1: 7 LIFE PROCESSES ---
+const t1Scenarios = [
+    { text: "When I touched the mimosa, they closed their leaves immediately.", answer: "Detect and react to stimuli" },
+    { text: "Sally is panting heavily after chasing the cats.", answer: "Breathe" },
+    { text: "Danny and Kitty were small kittens, but now they are getting bigger!", answer: "Grow" },
+    { text: "The mother cat is bearing a baby kitten.", answer: "Reproduce" },
+    { text: "Danny urinates on the floor.", answer: "Excrete" },
+    { text: "I have a sandwich and drink milk for breakfast.", answer: "Need food" },
+    { text: "Sally runs fast to chase after the cats.", answer: "Move" }
+];
+
+const t1Characteristics = [
+    "Move", "Breathe", "Grow", "Reproduce", "Detect and react to stimuli", "Need food", "Excrete"
+];
+
+let t1Index = 0;
+let t1Score = 0;
+
+function initTab1() {
+    t1Index = 0;
+    t1Score = 0;
+    document.getElementById('t1-score').innerText = t1Score;
+    document.getElementById('t1-total').innerText = t1Scenarios.length;
+    renderTab1Question();
+}
+
+function renderTab1Question() {
+    if (t1Index >= t1Scenarios.length) {
+        document.getElementById('t1-prompt').innerText = "🎉 Great job! You completed all scenarios!";
+        document.getElementById('t1-options').innerHTML = '';
+        document.getElementById('t1-feedback').innerText = '';
+        return;
+    }
+
+    const current = t1Scenarios[t1Index];
+    document.getElementById('t1-prompt').innerText = `"${current.text}"`;
+    document.getElementById('t1-feedback').innerText = '';
+
+    const container = document.getElementById('t1-options');
+    container.innerHTML = '';
+
+    t1Characteristics.forEach(char => {
+        const btn = document.createElement('button');
+        btn.className = 'action-btn';
+        btn.innerText = char;
+        btn.onclick = () => checkTab1Answer(char, current.answer, btn);
+        container.appendChild(btn);
+    });
+}
+
+function checkTab1Answer(selected, correct, btn) {
+    const feedback = document.getElementById('t1-feedback');
+    if (selected.toLowerCase() === correct.toLowerCase()) {
+        btn.classList.add('correct');
+        feedback.innerText = "✓ Correct!";
+        feedback.style.color = "var(--correct)";
+        t1Score++;
+        document.getElementById('t1-score').innerText = t1Score;
+    } else {
+        btn.classList.add('wrong');
+        feedback.innerText = `✗ Incorrect. Correct answer: ${correct}`;
+        feedback.style.color = "var(--wrong)";
+    }
+    
+    // Disable all buttons briefly then move to next
+    document.querySelectorAll('#t1-options button').forEach(b => b.disabled = true);
+    setTimeout(() => {
+        t1Index++;
+        renderTab1Question();
+    }, 1500);
+}
+
+// --- GAME 2: CLASSIFICATION ---
+const t2Questions = [
+    { q: "What primary structure divides animals into Vertebrates and Invertebrates?", opts: ["Backbone", "Legs", "Wings", "Tail"], ans: "Backbone" },
+    { q: "Spiders are invertebrates, but why are they NOT insects?", opts: ["They have 8 legs instead of 6", "They have wings", "They have a backbone", "They do not move"], ans: "They have 8 legs instead of 6" },
+    { q: "Which of the following is NOT one of the 5 vertebrate groups?", opts: ["Insects", "Amphibians", "Reptiles", "Mammals"], ans: "Insects" },
+    { q: "Plants are classified into two main groups based on whether they possess what feature?", opts: ["Flowers", "Leaves", "Roots", "Stems"], ans: "Flowers" }
+];
+
+let t2Index = 0;
+let t2Score = 0;
+
+function initTab2() {
+    t2Index = Math.floor(Math.random() * t2Questions.length);
+    renderTab2Question();
+}
+
+function renderTab2Question() {
+    const current = t2Questions[t2Index];
+    document.getElementById('t2-question').innerText = current.q;
+    document.getElementById('t2-feedback').innerText = '';
+    
+    const container = document.getElementById('t2-options');
+    container.innerHTML = '';
+
+    current.opts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'action-btn';
+        btn.innerText = opt;
+        btn.onclick = () => {
+            if (opt === current.ans) {
+                btn.classList.add('correct');
+                document.getElementById('t2-feedback').innerText = "✓ Correct!";
+                document.getElementById('t2-feedback').style.color = "var(--correct)";
+                t2Score += 10;
+                document.getElementById('t2-score').innerText = t2Score;
+            } else {
+                btn.classList.add('wrong');
+                document.getElementById('t2-feedback').innerText = `✗ Incorrect! Answer: ${current.ans}`;
+                document.getElementById('t2-feedback').style.color = "var(--wrong)";
+            }
+            document.querySelectorAll('#t2-options button').forEach(b => b.disabled = true);
+        };
+        container.appendChild(btn);
+    });
+}
+
+// --- GAME 3: DICHOTOMOUS KEY ENGINE ---
+const keyData = {
+    start: {
+        title: "Step 1: Legs Count",
+        desc: "Does the pond animal have 3 pairs of legs or more than 3 pairs?",
+        choices: [
+            { label: "3 pairs of legs (6 legs)", next: "three_pairs" },
+            { label: "More than 3 pairs of legs (>6 legs)", next: "more_three_pairs" }
+        ]
+    },
+    three_pairs: {
+        title: "Step 2: Tail Structure",
+        desc: "Does it have forked tails?",
+        choices: [
+            { label: "Forked tails", next: "forked" },
+            { label: "No forked tails", result: "Housefly (A)", desc: "Insect with 3 pairs of legs and no forked tails." }
+        ]
+    },
+    forked: {
+        title: "Step 3: Number of Forked Tails",
+        desc: "How many forked tails does it have?",
+        choices: [
+            { label: "3 forked tails", result: "Mayfly (E)", desc: "Pond nymph with 3 distinct forked tails." },
+            { label: "Without 3 forked tails (2 tails)", result: "Stonefly (C)", desc: "Pond nymph with 2 forked tails." }
+        ]
+    },
+    more_three_pairs: {
+        title: "Step 2: Body Segmentation",
+        desc: "Does the body have segmented parts?",
+        choices: [
+            { label: "Segmented bodies", next: "segmented" },
+            { label: "No segmented bodies", result: "Water mite (F)", desc: "Small arachnid-like pond animal with unsegmented body." }
+        ]
+    },
+    segmented: {
+        title: "Step 3: Pincer Feature",
+        desc: "Does it possess large pincers?",
+        choices: [
+            { label: "Large pincers present", result: "Yabby (B)", desc: "Crustacean with segmented body and large claws/pincers." },
+            { label: "No large pincers", result: "Shrimp (D)", desc: "Crustacean with segmented body and small/no pincers." }
+        ]
+    }
+};
+
+function renderKeyStep(stepKey) {
+    const node = keyData[stepKey];
+    document.getElementById('key-result').style.display = 'none';
+    document.querySelector('.tree-node').style.display = 'block';
+
+    document.getElementById('key-step-title').innerText = node.title;
+    document.getElementById('key-step-desc').innerText = node.desc;
+
+    const container = document.getElementById('key-btn-container');
+    container.innerHTML = '';
+
+    node.choices.forEach(c => {
+        const btn = document.createElement('button');
+        btn.className = 'action-btn';
+        btn.innerText = c.label;
+        btn.onclick = () => {
+            if (c.result) {
+                showKeyResult(c.result, c.desc);
+            } else {
+                renderKeyStep(c.next);
+            }
+        };
+        container.appendChild(btn);
+    });
+}
+
+function showKeyResult(name, desc) {
+    document.querySelector('.tree-node').style.display = 'none';
+    const res = document.getElementById('key-result');
+    res.style.display = 'block';
+    document.getElementById('organism-name').innerText = name;
+    document.getElementById('organism-desc').innerText = desc;
+}
+
+function resetKey() {
+    renderKeyStep('start');
+}
+
+// --- GAME 4: MICROSCOPE SIMULATOR ---
+function updateMicroscope() {
+    const text = document.getElementById('specimen-input').value || 'P';
+    const eyepiece = parseInt(document.getElementById('eyepiece-select').value);
+    const objective = parseInt(document.getElementById('objective-select').value);
+
+    const totalMag = eyepiece * objective;
+    document.getElementById('total-mag').innerText = totalMag + 'x';
+
+    const specimenEl = document.getElementById('lens-specimen');
+    specimenEl.innerText = text;
+    
+    // Scale size slightly based on objective power & rotate 180 deg for inverted image property
+    const scale = 0.8 + (objective / 20);
+    specimenEl.style.transform = `rotate(180deg) scale(${scale})`;
+}
+
+// Initialize on Load
+window.onload = () => {
+    initTab1();
+    initTab2();
+    resetKey();
+    updateMicroscope();
+};
+</script>
+</body>
+</html>
