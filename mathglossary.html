@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Revision Matching Game - 數學詞彙配對遊戲</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: linear-gradient(135deg, #a8edf0 0%, #fed6e3 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      padding: 20px;
+    }
+    .game-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    .stats-bar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      font-weight: bold;
+      font-size: 16px;
+      color: #444;
+    }
+    .timer {
+      color: #e63946;
+      font-size: 18px;
+    }
+    .word-box {
+      background: #f1f5f9;
+      border: 3px dashed #3b82f6;
+      border-radius: 15px;
+      padding: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      color: #1e3a8a;
+      margin-bottom: 15px;
+    }
+    .attempts-info {
+      font-size: 14px;
+      color: #64748b;
+      margin-bottom: 20px;
+    }
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .btn-option {
+      background: #e2e8f0;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 15px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #1e293b;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-option:hover {
+      background: #3b82f6;
+      color: white;
+      border-color: #2563eb;
+    }
+    .btn-start {
+      background: #22c55e;
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(34,197,94,0.3);
+    }
+    .btn-start:hover {
+      background: #16a34a;
+    }
+    .feedback {
+      height: 24px;
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .correct { color: #16a34a; }
+    .wrong { color: #dc2626; }
+    .result-screen {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="game-card">
+  <h1>🎮 Math Matching Game<br><small>數學詞彙配對遊戲</small></h1>
+
+  <!-- START SCREEN -->
+  <div id="start-screen">
+    <p>Match as many English math terms with their Traditional Chinese meanings in <b>60 seconds</b>!</p>
+    <p><b>Scoring:</b><br>
+    🥇 1st Try: 30 pts<br>
+    🥈 2nd Try: 20 pts<br>
+    🥉 3rd Try: 10 pts</p>
+    <button class="btn-start" onclick="startGame()">Start Game 🚀</button>
+  </div>
+
+  <!-- GAMEPLAY SCREEN -->
+  <div id="game-screen" style="display:none;">
+    <div class="stats-bar">
+      <div class="timer">⏱️ <span id="timer">60</span>s</div>
+      <div>Score: <span id="score">0</span></div>
+      <div>Correct: <span id="correct-count">0</span></div>
+    </div>
+
+    <div class="word-box" id="english-word">Loading...</div>
+    <div class="attempts-info">Attempts Left: <span id="attempts-left">3</span>/3</div>
+
+    <div class="options-grid" id="options-container"></div>
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div id="result-screen" class="result-screen">
+    <h2>⏰ Time's Up!</h2>
+    <p style="font-size: 20px;">Questions Correct: <b id="final-correct" style="color:#22c55e;">0</b></p>
+    <p style="font-size: 22px;">Total Score: <b id="final-score" style="color:#3b82f6;">0</b></p>
+    <button class="btn-start" onclick="startGame()">Play Again 🔄</button>
+  </div>
+</div>
+
+<script>
+  const vocabulary = [
+    { en: "Counting Forwards", zh: "順數" },
+    { en: "Counting Backwards", zh: "倒數" },
+    { en: "Odd Numbers", zh: "奇數" },
+    { en: "Even Numbers", zh: "偶數" },
+    { en: "Decomposition", zh: "分解" },
+    { en: "Composition", zh: "合成" },
+    { en: "Basic Addition", zh: "基本加法" },
+    { en: "Block Linking", zh: "方木連接" },
+    { en: "Addition with Linking", zh: "連接加法" },
+    { en: "Concept of Zero", zh: "0的認識" }
+  ];
+
+  let currentQuestions = [];
+  let currentIndex = 0;
+  let attempts = 3;
+  let score = 0;
+  let correctCount = 0;
+  let timeLeft = 60;
+  let timerInterval = null;
+
+  function shuffle(array) {
+    return array.sort(() => Math.random() - 0.5);
+  }
+
+  function startGame() {
+    document.getElementById("start-screen").style.display = "none";
+    document.getElementById("result-screen").style.display = "none";
+    document.getElementById("game-screen").style.display = "block";
+
+    score = 0;
+    correctCount = 0;
+    timeLeft = 60;
+    currentIndex = 0;
+
+    document.getElementById("score").innerText = score;
+    document.getElementById("correct-count").innerText = correctCount;
+    document.getElementById("timer").innerText = timeLeft;
+
+    currentQuestions = shuffle([...vocabulary]);
+    
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      document.getElementById("timer").innerText = timeLeft;
+      if (timeLeft <= 0) {
+        endGame();
+      }
+    }, 1000);
+
+    loadQuestion();
+  }
+
+  function loadQuestion() {
+    if (currentIndex >= currentQuestions.length) {
+      currentQuestions = shuffle([...vocabulary]);
+      currentIndex = 0;
+    }
+
+    attempts = 3;
+    document.getElementById("attempts-left").innerText = attempts;
+    document.getElementById("feedback").innerText = "";
+
+    const q = currentQuestions[currentIndex];
+    document.getElementById("english-word").innerText = q.en;
+
+    // Pick 3 wrong options randomly
+    const wrongOptions = vocabulary
+      .filter(item => item.zh !== q.zh)
+      .map(item => item.zh);
+    
+    const shuffledWrong = shuffle(wrongOptions).slice(0, 3);
+    const allOptions = shuffle([q.zh, ...shuffledWrong]);
+
+    const optionsContainer = document.getElementById("options-container");
+    optionsContainer.innerHTML = "";
+
+    allOptions.forEach(opt => {
+      const btn = document.createElement("button");
+      btn.className = "btn-option";
+      btn.innerText = opt;
+      btn.onclick = () => checkAnswer(opt, q.zh);
+      optionsContainer.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(selected, correct) {
+    const feedbackEl = document.getElementById("feedback");
+
+    if (selected === correct) {
+      correctCount++;
+      let pointsEarned = attempts === 3 ? 30 : attempts === 2 ? 20 : 10;
+      score += pointsEarned;
+
+      document.getElementById("score").innerText = score;
+      document.getElementById("correct-count").innerText = correctCount;
+
+      feedbackEl.className = "feedback correct";
+      feedbackEl.innerText = `✨ Correct! (+${pointsEarned} pts)`;
+
+      setTimeout(() => {
+        currentIndex++;
+        loadQuestion();
+      }, 700);
+
+    } else {
+      attempts--;
+      document.getElementById("attempts-left").innerText = attempts;
+
+      if (attempts > 0) {
+        feedbackEl.className = "feedback wrong";
+        feedbackEl.innerText = `❌ Try again! (${attempts} try left)`;
+      } else {
+        feedbackEl.className = "feedback wrong";
+        feedbackEl.innerText = `💡 The answer was: ${correct}`;
+        setTimeout(() => {
+          currentIndex++;
+          loadQuestion();
+        }, 1200);
+      }
+    }
+  }
+
+// Add high score variable at top of script
+  let highScore = 0;
+
+  function endGame() {
+    clearInterval(timerInterval);
+    document.getElementById("game-screen").style.display = "none";
+    document.getElementById("result-screen").style.display = "block";
+    
+    // Update High Score
+    if (score > highScore) {
+      highScore = score;
+    }
+
+    document.getElementById("final-score").innerText = score;
+    document.getElementById("final-correct").innerText = correctCount;
+
+    // Custom Encouraging Feedback based on score
+    let titleMsg = "⏰ Time's Up!";
+    let praiseMsg = "Great effort! Want to try again and beat your score?";
+
+    if (score >= 200) {
+      titleMsg = "🌟 Math Superstar! 🏆";
+      praiseMsg = "Outstanding job! You mastered these terms!";
+    } else if (score >= 100) {
+      titleMsg = "🎉 Great Job! 👍";
+      praiseMsg = "You're getting so fast at this! Ready for another round?";
+    }
+
+    let resultHTML = `
+      <h2>${titleMsg}</h2>
+      <p>${praiseMsg}</p>
+      <p style="font-size: 20px;">Questions Correct: <b style="color:#22c55e;">${correctCount}</b></p>
+      <p style="font-size: 22px;">Total Score: <b style="color:#3b82f6;">${score}</b></p>
+      <p style="font-size: 16px; color: #888;">👑 Personal Best: <b>${highScore}</b></p>
+      <button class="btn-start" onclick="startGame()" style="font-size: 22px; padding: 15px 35px; background: #ff4757;">
+        Play Again! 🚀
+      </button>
+    `;
+
+    document.getElementById("result-screen").innerHTML = resultHTML;
+  }
+</script>
+
+</body>
+</html>
