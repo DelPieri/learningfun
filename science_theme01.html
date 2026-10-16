@@ -235,25 +235,59 @@ function checkTab1Answer(selected, correct, btn) {
     }, 1500);
 }
 
-// --- GAME 2: CLASSIFICATION ---
+// --- GAME 2: CLASSIFICATION (FIXED & EXPANDED) ---
 const t2Questions = [
-    { q: "What primary structure divides animals into Vertebrates and Invertebrates?", opts: ["Backbone", "Legs", "Wings", "Tail"], ans: "Backbone" },
-    { q: "Spiders are invertebrates, but why are they NOT insects?", opts: ["They have 8 legs instead of 6", "They have wings", "They have a backbone", "They do not move"], ans: "They have 8 legs instead of 6" },
-    { q: "Which of the following is NOT one of the 5 vertebrate groups?", opts: ["Insects", "Amphibians", "Reptiles", "Mammals"], ans: "Insects" },
-    { q: "Plants are classified into two main groups based on whether they possess what feature?", opts: ["Flowers", "Leaves", "Roots", "Stems"], ans: "Flowers" }
+    { 
+        q: "Which primary structure divides animals into Vertebrates and Invertebrates?", 
+        opts: ["Backbone", "Legs", "Wings", "Tail"], 
+        ans: "Backbone" 
+    },
+    { 
+        q: "Spiders are invertebrates, but why are they NOT insects?", 
+        opts: ["They have 8 legs instead of 6", "They have wings", "They have a backbone", "They do not move"], 
+        ans: "They have 8 legs instead of 6" 
+    },
+    { 
+        q: "Which of the following is NOT one of the 5 vertebrate groups?", 
+        opts: ["Insects", "Amphibians", "Reptiles", "Mammals"], 
+        ans: "Insects" 
+    },
+    { 
+        q: "Plants are classified into two main groups based on whether they possess what feature?", 
+        opts: ["Flowers", "Leaves", "Roots", "Stems"], 
+        ans: "Flowers" 
+    },
+    { 
+        q: "What is a main benefit of organizing animals by classification at the zoo?", 
+        opts: ["Easier to take care of and share same habitat", "Makes animals grow faster", "Changes their diet", "Teaches animals to talk"], 
+        ans: "Easier to take care of and share same habitat" 
+    },
+    { 
+        q: "What tool helps identify the group or name of a living thing based on observable external features?", 
+        opts: ["Identification Key", "Microscope Eyepiece", "Thermometer", "Measuring Cylinder"], 
+        ans: "Identification Key" 
+    }
 ];
 
 let t2Index = 0;
 let t2Score = 0;
 
 function initTab2() {
-    t2Index = Math.floor(Math.random() * t2Questions.length);
+    t2Index = 0;
+    t2Score = 0;
+    document.getElementById('t2-score').innerText = t2Score;
+    renderTab2Question();
+}
+
+function nextTab2Question() {
+    // Cycles sequentially to the next question without random repeats
+    t2Index = (t2Index + 1) % t2Questions.length;
     renderTab2Question();
 }
 
 function renderTab2Question() {
     const current = t2Questions[t2Index];
-    document.getElementById('t2-question').innerText = current.q;
+    document.getElementById('t2-question').innerText = `(${t2Index + 1}/${t2Questions.length}) ${current.q}`;
     document.getElementById('t2-feedback').innerText = '';
     
     const container = document.getElementById('t2-options');
@@ -280,6 +314,7 @@ function renderTab2Question() {
         container.appendChild(btn);
     });
 }
+
 
 // --- GAME 3: DICHOTOMOUS KEY ENGINE ---
 const keyData = {
