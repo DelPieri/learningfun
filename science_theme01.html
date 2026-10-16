@@ -91,7 +91,10 @@
     <div id="tab2" class="tab-content">
         <div class="score-box">
             <span>Score: <span id="t2-score">0</span></span>
-            <button onclick="initTab2()" style="padding: 5px 10px; cursor:pointer;">Next Question</button>
+            <div>
+                <button onclick="resetTab2()" style="padding: 5px 10px; cursor:pointer; margin-right: 5px;">Reset Score</button>
+                <button onclick="nextTab2Question()" style="padding: 6px 12px; cursor:pointer; background: var(--secondary); color: white; border: none; border-radius: 4px; font-weight: bold;">Next Question ➔</button>
+            </div>
         </div>
         <div class="card">
             <h3 id="t2-question"></h3>
@@ -227,7 +230,6 @@ function checkTab1Answer(selected, correct, btn) {
         feedback.style.color = "var(--wrong)";
     }
     
-    // Disable all buttons briefly then move to next
     document.querySelectorAll('#t1-options button').forEach(b => b.disabled = true);
     setTimeout(() => {
         t1Index++;
@@ -235,7 +237,7 @@ function checkTab1Answer(selected, correct, btn) {
     }, 1500);
 }
 
-// --- GAME 2: CLASSIFICATION (FIXED & EXPANDED) ---
+// --- GAME 2: CLASSIFICATION ---
 const t2Questions = [
     { 
         q: "Which primary structure divides animals into Vertebrates and Invertebrates?", 
@@ -272,7 +274,7 @@ const t2Questions = [
 let t2Index = 0;
 let t2Score = 0;
 
-function initTab2() {
+function resetTab2() {
     t2Index = 0;
     t2Score = 0;
     document.getElementById('t2-score').innerText = t2Score;
@@ -280,14 +282,13 @@ function initTab2() {
 }
 
 function nextTab2Question() {
-    // Cycles sequentially to the next question without random repeats
     t2Index = (t2Index + 1) % t2Questions.length;
     renderTab2Question();
 }
 
 function renderTab2Question() {
     const current = t2Questions[t2Index];
-    document.getElementById('t2-question').innerText = `(${t2Index + 1}/${t2Questions.length}) ${current.q}`;
+    document.getElementById('t2-question').innerText = `Question ${t2Index + 1} of ${t2Questions.length}: ${current.q}`;
     document.getElementById('t2-feedback').innerText = '';
     
     const container = document.getElementById('t2-options');
@@ -314,7 +315,6 @@ function renderTab2Question() {
         container.appendChild(btn);
     });
 }
-
 
 // --- GAME 3: DICHOTOMOUS KEY ENGINE ---
 const keyData = {
@@ -410,7 +410,6 @@ function updateMicroscope() {
     const specimenEl = document.getElementById('lens-specimen');
     specimenEl.innerText = text;
     
-    // Scale size slightly based on objective power & rotate 180 deg for inverted image property
     const scale = 0.8 + (objective / 20);
     specimenEl.style.transform = `rotate(180deg) scale(${scale})`;
 }
@@ -418,7 +417,7 @@ function updateMicroscope() {
 // Initialize on Load
 window.onload = () => {
     initTab1();
-    initTab2();
+    resetTab2();
     resetKey();
     updateMicroscope();
 };
