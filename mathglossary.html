@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Math Revision Matching Game - 數學詞彙配對遊戲</title>
+  <title>P.6 Math Vocabulary Matching Game - 六年級數學詞彙配對遊戲</title>
   <style>
     body {
       font-family: "Segoe UI", Arial, sans-serif;
@@ -19,7 +19,7 @@
       background: #ffffff;
       border-radius: 20px;
       padding: 30px;
-      max-width: 500px;
+      max-width: 560px;
       width: 100%;
       box-shadow: 0 10px 25px rgba(0,0,0,0.15);
       text-align: center;
@@ -46,10 +46,14 @@
       border: 3px dashed #3b82f6;
       border-radius: 15px;
       padding: 20px;
-      font-size: 28px;
+      font-size: 24px;
       font-weight: bold;
       color: #1e3a8a;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .attempts-info {
       font-size: 14px;
@@ -65,17 +69,20 @@
       background: #e2e8f0;
       border: 2px solid #cbd5e1;
       border-radius: 12px;
-      padding: 15px;
-      font-size: 20px;
+      padding: 15px 10px;
+      font-size: 18px;
       font-weight: bold;
       color: #1e293b;
       cursor: pointer;
       transition: all 0.2s ease;
     }
-    .btn-option:hover {
+    .btn-option:hover:not(:disabled) {
       background: #3b82f6;
       color: white;
       border-color: #2563eb;
+    }
+    .btn-option:disabled {
+      cursor: not-allowed;
     }
     .btn-start {
       background: #22c55e;
@@ -87,9 +94,11 @@
       border-radius: 30px;
       cursor: pointer;
       box-shadow: 0 4px 10px rgba(34,197,94,0.3);
+      transition: transform 0.1s ease;
     }
     .btn-start:hover {
       background: #16a34a;
+      transform: scale(1.03);
     }
     .feedback {
       height: 24px;
@@ -99,23 +108,21 @@
     }
     .correct { color: #16a34a; }
     .wrong { color: #dc2626; }
-    .result-screen {
-      display: none;
-    }
   </style>
 </head>
 <body>
 
 <div class="game-card">
-  <h1>🎮 Math Matching Game<br><small>數學詞彙配對遊戲</small></h1>
+  <h1>🎮 P.6 Math Matching Game<br><small>六年級數學詞彙配對遊戲</small></h1>
 
   <!-- START SCREEN -->
   <div id="start-screen">
-    <p>Match as many English math terms with their Traditional Chinese meanings in <b>60 seconds</b>!</p>
-    <p><b>Scoring:</b><br>
+    <p>Match the English math terms with their Traditional Chinese meaning in <b>60 seconds</b>!</p>
+    <p><b>Scoring Rules:</b><br>
     🥇 1st Try: 30 pts<br>
     🥈 2nd Try: 20 pts<br>
     🥉 3rd Try: 10 pts</p>
+    <p style="color: #64748b; font-size: 14px;">Total Vocabulary Bank: <b>196 Terms</b></p>
     <button class="btn-start" onclick="startGame()">Start Game 🚀</button>
   </div>
 
@@ -134,27 +141,228 @@
     <div class="feedback" id="feedback"></div>
   </div>
 
-  <!-- RESULT SCREEN -->
-  <div id="result-screen" class="result-screen">
-    <h2>⏰ Time's Up!</h2>
+  <!-- RESULT / RETRY SCREEN -->
+  <div id="result-screen" style="display:none;">
+    <h2 id="result-title">⏰ Time's Up!</h2>
+    <p id="result-praise">Great job practicing!</p>
     <p style="font-size: 20px;">Questions Correct: <b id="final-correct" style="color:#22c55e;">0</b></p>
     <p style="font-size: 22px;">Total Score: <b id="final-score" style="color:#3b82f6;">0</b></p>
-    <button class="btn-start" onclick="startGame()">Play Again 🔄</button>
+    <p style="font-size: 16px; color: #64748b;">👑 High Score: <b id="high-score">0</b></p>
+    <br>
+    <button class="btn-start" onclick="startGame()" style="font-size: 22px; padding: 14px 35px; background: #3b82f6;">
+      Play Again 🔄
+    </button>
   </div>
 </div>
 
 <script>
+  // Complete 196 terms loaded from P6_Math_Glossary_v2.xlsx
   const vocabulary = [
-    { en: "Counting Forwards", zh: "順數" },
-    { en: "Counting Backwards", zh: "倒數" },
-    { en: "Odd Numbers", zh: "奇數" },
-    { en: "Even Numbers", zh: "偶數" },
-    { en: "Decomposition", zh: "分解" },
-    { en: "Composition", zh: "合成" },
-    { en: "Basic Addition", zh: "基本加法" },
-    { en: "Block Linking", zh: "方木連接" },
-    { en: "Addition with Linking", zh: "連接加法" },
-    { en: "Concept of Zero", zh: "0的認識" }
+    {"en": "Arithmetic operations", "zh": "四則運算"},
+    {"en": "addition", "zh": "加法"},
+    {"en": "add…to", "zh": "加"},
+    {"en": "plus", "zh": "加"},
+    {"en": "sum", "zh": "和"},
+    {"en": "subtraction", "zh": "減法"},
+    {"en": "subtract…from", "zh": "減"},
+    {"en": "take away", "zh": "減"},
+    {"en": "minus", "zh": "減"},
+    {"en": "difference", "zh": "差"},
+    {"en": "multiplication", "zh": "乘法"},
+    {"en": "multiply", "zh": "乘"},
+    {"en": "times", "zh": "乘"},
+    {"en": "product", "zh": "積"},
+    {"en": "time(s)", "zh": "倍"},
+    {"en": "division", "zh": "除法"},
+    {"en": "divide", "zh": "除"},
+    {"en": "divide exactly", "zh": "整除"},
+    {"en": "divisible", "zh": "可整除"},
+    {"en": "quotient", "zh": "商"},
+    {"en": "remainder", "zh": "餘數"},
+    {"en": "dividend", "zh": "被除數"},
+    {"en": "divisor", "zh": "除數"},
+    {"en": "fraction", "zh": "分數"},
+    {"en": "numerator", "zh": "分子"},
+    {"en": "denominator", "zh": "分母"},
+    {"en": "proper fraction", "zh": "真分數"},
+    {"en": "improper fraction", "zh": "假分數"},
+    {"en": "mixed number", "zh": "帶分數"},
+    {"en": "equivalent fraction", "zh": "等值分數"},
+    {"en": "simplest form", "zh": "最簡分數"},
+    {"en": "reduction of a fraction", "zh": "約分"},
+    {"en": "expanding a fraction", "zh": "通分"},
+    {"en": "reciprocal", "zh": "倒數"},
+    {"en": "decimal", "zh": "小數"},
+    {"en": "decimal point", "zh": "小數點"},
+    {"en": "decimal place", "zh": "小數位"},
+    {"en": "tenths place", "zh": "十分位"},
+    {"en": "hundredths place", "zh": "百分位"},
+    {"en": "thousandths place", "zh": "千分位"},
+    {"en": "recurring decimal", "zh": "循環小數"},
+    {"en": "percentage", "zh": "百分率"},
+    {"en": "percent", "zh": "百分之"},
+    {"en": "percentage change", "zh": "百分數改變"},
+    {"en": "percentage increase", "zh": "百分增長"},
+    {"en": "percentage decrease", "zh": "百分減少"},
+    {"en": "discount", "zh": "折扣"},
+    {"en": "profit", "zh": "利潤"},
+    {"en": "loss", "zh": "虧蝕"},
+    {"en": "cost price", "zh": "成本價"},
+    {"en": "selling price", "zh": "售價"},
+    {"en": "marked price", "zh": "標價"},
+    {"en": "simple interest", "zh": "單利息"},
+    {"en": "principal", "zh": "本金"},
+    {"en": "rate", "zh": "利率"},
+    {"en": "ratio", "zh": "比"},
+    {"en": "proportion", "zh": "比例"},
+    {"en": "direct proportion", "zh": "正比例"},
+    {"en": "inverse proportion", "zh": "反比例"},
+    {"en": "rate", "zh": "率"},
+    {"en": "speed", "zh": "速率"},
+    {"en": "algebra", "zh": "代數"},
+    {"en": "algebraic expression", "zh": "代數式"},
+    {"en": "variable", "zh": "變量"},
+    {"en": "unknown", "zh": "未知數"},
+    {"en": "constant", "zh": "常數"},
+    {"en": "coefficient", "zh": "係數"},
+    {"en": "equation", "zh": "方程"},
+    {"en": "linear equation", "zh": "一次方程"},
+    {"en": "solution", "zh": "解"},
+    {"en": "solve an equation", "zh": "解方程"},
+    {"en": "formula", "zh": "公式"},
+    {"en": "geometry", "zh": "幾何"},
+    {"en": "point", "zh": "點"},
+    {"en": "line", "zh": "線"},
+    {"en": "line segment", "zh": "線段"},
+    {"en": "ray", "zh": "射線"},
+    {"en": "parallel lines", "zh": "平行線"},
+    {"en": "perpendicular lines", "zh": "垂直線"},
+    {"en": "angle", "zh": "角"},
+    {"en": "acute angle", "zh": "銳角"},
+    {"en": "right angle", "zh": "直角"},
+    {"en": "obtuse angle", "zh": "鈍角"},
+    {"en": "straight angle", "zh": "平角"},
+    {"en": "reflex angle", "zh": "優角"},
+    {"en": "degree", "zh": "度"},
+    {"en": "triangle", "zh": "三角形"},
+    {"en": "equilateral triangle", "zh": "等邊三角形"},
+    {"en": "isosceles triangle", "zh": "等腰三角形"},
+    {"en": "scalene triangle", "zh": "不等邊三角形"},
+    {"en": "right-angled triangle", "zh": "直角三角形"},
+    {"en": "acute-angled triangle", "zh": "銳角三角形"},
+    {"en": "obtuse-angled triangle", "zh": "鈍角三角形"},
+    {"en": "quadrilateral", "zh": "四邊形"},
+    {"en": "square", "zh": "正方形"},
+    {"en": "rectangle", "zh": "長方形"},
+    {"en": "parallelogram", "zh": "平行四邊形"},
+    {"en": "rhombus", "zh": "菱形"},
+    {"en": "trapezium", "zh": "梯形"},
+    {"en": "polygon", "zh": "多邊形"},
+    {"en": "regular polygon", "zh": "正多邊形"},
+    {"en": "pentagon", "zh": "五邊形"},
+    {"en": "hexagon", "zh": "六邊形"},
+    {"en": "octagon", "zh": "八邊形"},
+    {"en": "circle", "zh": "圓形"},
+    {"en": "center", "zh": "圓心"},
+    {"en": "radius", "zh": "半徑"},
+    {"en": "diameter", "zh": "直徑"},
+    {"en": "circumference", "zh": "圓周"},
+    {"en": "arc", "zh": "弧"},
+    {"en": "sector", "zh": "扇形"},
+    {"en": "pi", "zh": "圓周率"},
+    {"en": "3D shape", "zh": "立體圖形"},
+    {"en": "cube", "zh": "正方體"},
+    {"en": "cuboid", "zh": "長方體"},
+    {"en": "prism", "zh": "柱體"},
+    {"en": "triangular prism", "zh": "三角柱體"},
+    {"en": "quadrilateral prism", "zh": "四角柱體"},
+    {"en": "pyramid", "zh": "錐體"},
+    {"en": "triangular pyramid", "zh": "三角錐體"},
+    {"en": "square pyramid", "zh": "四角錐體"},
+    {"en": "cylinder", "zh": "圓柱體"},
+    {"en": "cone", "zh": "圓錐體"},
+    {"en": "sphere", "zh": "球體"},
+    {"en": "face", "zh": "面"},
+    {"en": "edge", "zh": "稜"},
+    {"en": "vertex", "zh": "頂點"},
+    {"en": "net", "zh": "摺網"},
+    {"en": "measurement", "zh": "度量"},
+    {"en": "length", "zh": "長度"},
+    {"en": "width", "zh": "闊度"},
+    {"en": "height", "zh": "高度"},
+    {"en": "perimeter", "zh": "周界"},
+    {"en": "area", "zh": "面積"},
+    {"en": "base", "zh": "底"},
+    {"en": "volume", "zh": "體積"},
+    {"en": "capacity", "zh": "容量"},
+    {"en": "mass", "zh": "質量"},
+    {"en": "weight", "zh": "重量"},
+    {"en": "time", "zh": "時間"},
+    {"en": "duration", "zh": "時間間隔"},
+    {"en": "millimeter", "zh": "毫米"},
+    {"en": "centimeter", "zh": "厘米"},
+    {"en": "meter", "zh": "米"},
+    {"en": "kilometer", "zh": "公里"},
+    {"en": "square centimeter", "zh": "平方厘米"},
+    {"en": "square meter", "zh": "平方米"},
+    {"en": "cubic centimeter", "zh": "立方厘米"},
+    {"en": "cubic meter", "zh": "立方米"},
+    {"en": "milliliter", "zh": "毫升"},
+    {"en": "liter", "zh": "升"},
+    {"en": "gram", "zh": "克"},
+    {"en": "kilogram", "zh": "公斤"},
+    {"en": "second", "zh": "秒"},
+    {"en": "minute", "zh": "分鐘"},
+    {"en": "hour", "zh": "小時"},
+    {"en": "statistics", "zh": "統計"},
+    {"en": "data", "zh": "數據"},
+    {"en": "table", "zh": "統計表"},
+    {"en": "bar chart", "zh": "棒形圖"},
+    {"en": "broken-line graph", "zh": "折線圖"},
+    {"en": "pie chart", "zh": "圓形圖"},
+    {"en": "pictogram", "zh": "象形圖"},
+    {"en": "average", "zh": "平均數"},
+    {"en": "mean", "zh": "算術平均數"},
+    {"en": "maximum", "zh": "最大值"},
+    {"en": "minimum", "zh": "最小值"},
+    {"en": "range", "zh": "極差"},
+    {"en": "probability", "zh": "概率"},
+    {"en": "chance", "zh": "機會"},
+    {"en": "certain", "zh": "必然"},
+    {"en": "impossible", "zh": "不可能"},
+    {"en": "equally likely", "zh": "等可能"},
+    {"en": "number", "zh": "數字"},
+    {"en": "digit", "zh": "數位"},
+    {"en": "natural number", "zh": "自然數"},
+    {"en": "whole number", "zh": "整數"},
+    {"en": "positive number", "zh": "正數"},
+    {"en": "negative number", "zh": "負數"},
+    {"en": "odd number", "zh": "奇數"},
+    {"en": "even number", "zh": "偶數"},
+    {"en": "prime number", "zh": "質數"},
+    {"en": "composite number", "zh": "合數"},
+    {"en": "factor", "zh": "因數"},
+    {"en": "common factor", "zh": "公因數"},
+    {"en": "highest common factor", "zh": "最高公因數"},
+    {"en": "multiple", "zh": "倍數"},
+    {"en": "common multiple", "zh": "公倍數"},
+    {"en": "least common multiple", "zh": "最小公倍數"},
+    {"en": "estimation", "zh": "估算"},
+    {"en": "rounding", "zh": "四捨五入"},
+    {"en": "nearest", "zh": "最接近的"},
+    {"en": "symmetry", "zh": "對稱"},
+    {"en": "line of symmetry", "zh": "對稱軸"},
+    {"en": "rotational symmetry", "zh": "旋轉對稱"},
+    {"en": "transformation", "zh": "變換"},
+    {"en": "translation", "zh": "平移"},
+    {"en": "reflection", "zh": "反射"},
+    {"en": "rotation", "zh": "旋轉"},
+    {"en": "scale", "zh": "比例尺"},
+    {"en": "compass point", "zh": "方向"},
+    {"en": "North", "zh": "北"},
+    {"en": "South", "zh": "南"},
+    {"en": "East", "zh": "東"},
+    {"en": "West", "zh": "西"}
   ];
 
   let currentQuestions = [];
@@ -162,6 +370,7 @@
   let attempts = 3;
   let score = 0;
   let correctCount = 0;
+  let highScore = 0;
   let timeLeft = 60;
   let timerInterval = null;
 
@@ -210,10 +419,9 @@
     const q = currentQuestions[currentIndex];
     document.getElementById("english-word").innerText = q.en;
 
-    // Pick 3 wrong options randomly
-    const wrongOptions = vocabulary
-      .filter(item => item.zh !== q.zh)
-      .map(item => item.zh);
+    // Deduplicate wrong options so all 4 choices are unique
+    const uniqueChineseExplanations = [...new Set(vocabulary.map(item => item.zh))];
+    const wrongOptions = uniqueChineseExplanations.filter(zh => zh !== q.zh);
     
     const shuffledWrong = shuffle(wrongOptions).slice(0, 3);
     const allOptions = shuffle([q.zh, ...shuffledWrong]);
@@ -225,12 +433,12 @@
       const btn = document.createElement("button");
       btn.className = "btn-option";
       btn.innerText = opt;
-      btn.onclick = () => checkAnswer(opt, q.zh);
+      btn.onclick = () => checkAnswer(opt, q.zh, btn);
       optionsContainer.appendChild(btn);
     });
   }
 
-  function checkAnswer(selected, correct) {
+  function checkAnswer(selected, correct, btnElement) {
     const feedbackEl = document.getElementById("feedback");
 
     if (selected === correct) {
@@ -247,66 +455,54 @@
       setTimeout(() => {
         currentIndex++;
         loadQuestion();
-      }, 700);
+      }, 600);
 
     } else {
       attempts--;
       document.getElementById("attempts-left").innerText = attempts;
+      btnElement.style.opacity = "0.4";
+      btnElement.disabled = true;
 
       if (attempts > 0) {
         feedbackEl.className = "feedback wrong";
         feedbackEl.innerText = `❌ Try again! (${attempts} try left)`;
       } else {
         feedbackEl.className = "feedback wrong";
-        feedbackEl.innerText = `💡 The answer was: ${correct}`;
+        feedbackEl.innerText = `💡 Correct answer: ${correct}`;
         setTimeout(() => {
           currentIndex++;
           loadQuestion();
-        }, 1200);
+        }, 1100);
       }
     }
   }
-
-// Add high score variable at top of script
-  let highScore = 0;
 
   function endGame() {
     clearInterval(timerInterval);
     document.getElementById("game-screen").style.display = "none";
     document.getElementById("result-screen").style.display = "block";
-    
-    // Update High Score
+
     if (score > highScore) {
       highScore = score;
     }
 
     document.getElementById("final-score").innerText = score;
     document.getElementById("final-correct").innerText = correctCount;
+    document.getElementById("high-score").innerText = highScore;
 
-    // Custom Encouraging Feedback based on score
     let titleMsg = "⏰ Time's Up!";
-    let praiseMsg = "Great effort! Want to try again and beat your score?";
+    let praiseMsg = "Well done! Want to try again and break your record?";
 
-    if (score >= 200) {
-      titleMsg = "🌟 Math Superstar! 🏆";
-      praiseMsg = "Outstanding job! You mastered these terms!";
-    } else if (score >= 100) {
+    if (score >= 240) {
+      titleMsg = "🌟 Primary 6 Math Master! 🏆";
+      praiseMsg = "Amazing speed and vocabulary skills!";
+    } else if (score >= 120) {
       titleMsg = "🎉 Great Job! 👍";
-      praiseMsg = "You're getting so fast at this! Ready for another round?";
+      praiseMsg = "Super fast speed! Can you score even higher next round?";
     }
 
-    let resultHTML = `
-      <h2>${titleMsg}</h2>
-      <p>${praiseMsg}</p>
-      <p style="font-size: 20px;">Questions Correct: <b style="color:#22c55e;">${correctCount}</b></p>
-      <p style="font-size: 22px;">Total Score: <b style="color:#3b82f6;">${score}</b></p>
-      <p style="font-size: 16px; color: #888;">👑 Personal Best: <b>${highScore}</b></p>
-      <button class="btn-start" onclick="startGame()" style="font-size: 22px; padding: 15px 35px; background: #ff4757;">
-        Play Again! 🚀
-      </button>
-    `;
-
-    document.getElementById("result-screen").innerHTML = resultHTML;
+    document.getElementById("result-title").innerText = titleMsg;
+    document.getElementById("result-praise").innerText = praiseMsg;
   }
 </script>
 
